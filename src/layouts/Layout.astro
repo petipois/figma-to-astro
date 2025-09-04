@@ -17,7 +17,7 @@ import Footer from "@/components/Footer.astro";
 		<title>{siteTitle}</title>
 		<meta name="description" content={siteDescription} />
 		<meta name="keywords" content={siteKeywords} />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" type="image/svg+xml" href="../favicon.png" />
 		<link rel="canonical" href="https://yourdomain.com/" />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -46,9 +46,26 @@ import Footer from "@/components/Footer.astro";
 			name="twitter:image"
 			content="https://figstro.appwrite.network/images/logo.png"
 		/>
-
+		<link
+			rel="apple-touch-icon"
+			sizes="180x180"
+			href="../apple-touch-icon.png"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="32x32"
+			href="../favicon-32x32.png"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="16x16"
+			href="../favicon-16x16.png"
+		/>
+		<link rel="manifest" href="/site.webmanifest" />
 		<!-- Structured Data -->
-		<script type="application/ld+json">
+		<script type="application/ld+json" is:inline>
 			{
 				"@context": "https://schema.org",
 				"@type": "WebSite",
