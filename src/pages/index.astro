@@ -4,33 +4,73 @@ import Button from "@/components/starwind/button";
 ---
 
 <Layout>
-  <section
-    class="flex flex-col items-center justify-center min-h-screen px-6 bg-gradient-to-b from-orange-50 to-white text-center"
-  >
-    <!-- Main Title -->
-    <h1
-      class="text-6xl md:text-7xl font-extrabold mb-4 text-gray-900 drop-shadow-md"
-    >
+  <span slot="title">Figstro</span>
+
+  <!-- Hero Section -->
+  <section class="flex flex-col items-center justify-center flex-1 text-center bg-gradient-to-b from-orange-50 to-white px-6 py-48">
+    <h1 class="text-6xl md:text-7xl font-extrabold mb-4 text-gray-900 drop-shadow-md">
       Figstro
     </h1>
-
-    <!-- Subtitle -->
     <h2 class="text-lg md:text-2xl mb-12 text-gray-700 max-w-xl">
-      Add your Figma design URL and instantly get Astro components—no setup
-      required!
+      Add your Figma design URL and instantly get Astro components—no setup required!
     </h2>
-
-    <!-- CTA Button -->
     <Button
       href="/converter"
       class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-4 px-8 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300"
     >
       Try it Free!
     </Button>
+  </section>
 
-    <!-- Optional Hackathon Flair -->
-    <p class="mt-8 text-gray-500 text-sm md:text-base">
-      Built with ❤️ for the Appwrite Sites Hackathon
+  <!-- How It Works Section -->
+  <section class="bg-white py-16 px-6 text-center" id="how-it-works">
+    <h2 class="text-4xl font-bold mb-12 text-gray-900">How It Works</h2>
+    <div class="grid md:grid-cols-3 gap-12 max-w-5xl mx-auto">
+      <div class="p-6 bg-orange-50 rounded-lg shadow hover:shadow-lg transition-shadow duration-300">
+        <h3 class="text-2xl font-semibold mb-3">1. Paste Your URL</h3>
+        <p class="text-gray-700">Copy your Figma design link and paste it into our converter input field.</p>
+      </div>
+      <div class="p-6 bg-orange-50 rounded-lg shadow hover:shadow-lg transition-shadow duration-300">
+        <h3 class="text-2xl font-semibold mb-3">2. Preview Instantly</h3>
+        <p class="text-gray-700">See a live preview of your Figma frames directly in the browser before converting.</p>
+      </div>
+      <div class="p-6 bg-orange-50 rounded-lg shadow hover:shadow-lg transition-shadow duration-300">
+        <h3 class="text-2xl font-semibold mb-3">3. Generate Astro Components</h3>
+        <p class="text-gray-700">Download or copy clean Astro component code for your project in seconds.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Use Figstro Section -->
+  <section class="bg-gray-50 py-16 px-6 text-center" id="features">
+    <h2 class="text-4xl font-bold mb-12 text-gray-900">Why Use Figstro</h2>
+    <div class="grid md:grid-cols-3 gap-12 max-w-5xl mx-auto">
+      <div class="p-6 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-300">
+        <h3 class="text-2xl font-semibold mb-3">Save Time</h3>
+        <p class="text-gray-700">Convert your designs to code instantly without manually recreating layouts.</p>
+      </div>
+      <div class="p-6 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-300">
+        <h3 class="text-2xl font-semibold mb-3">Clean Code</h3>
+        <p class="text-gray-700">Generated Astro components follow clean and organized structure.</p>
+      </div>
+      <div class="p-6 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-300">
+        <h3 class="text-2xl font-semibold mb-3">Beginner Friendly</h3>
+        <p class="text-gray-700">No prior setup required—perfect for hackathons or rapid prototyping.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call-to-Action Section -->
+  <section class="bg-gradient-to-b from-orange-50 to-white py-16 px-6 text-center">
+    <h2 class="text-4xl font-bold mb-6 text-gray-900">Ready to Get Started?</h2>
+    <p class="text-gray-700 mb-8 max-w-lg mx-auto">
+      Paste your Figma file URL and start generating Astro components in seconds!
     </p>
+    <Button
+      href="/converter"
+      class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-4 px-8 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300"
+    >
+      Try it Free!
+    </Button>
   </section>
 </Layout>

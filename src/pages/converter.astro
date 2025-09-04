@@ -5,26 +5,42 @@ import Layout from "@/layouts/Layout.astro";
 ---
 
 <Layout>
-  <section class="flex flex-col items-center justify-center min-h-screen px-4 text-center">
-    <h1 class="text-4xl font-bold mb-4">Preview Your Figma File</h1>
-    <p class="text-gray-700 mb-6">Paste a Figma file URL below to see a live preview and generate Astro components.</p>
+  <section class="flex flex-col items-center justify-center min-h-screen px-6 text-center bg-gradient-to-b from-white to-orange-50">
+    <h1 class="text-5xl md:text-6xl font-extrabold mb-4 text-gray-900 drop-shadow-md">
+      Preview Your Figma File
+    </h1>
+    <p class="text-gray-700 mb-8 max-w-xl text-center">
+      Paste a Figma file URL below to see a live preview and generate ready-to-use Astro components instantly.
+    </p>
 
-    <form id="figmaForm" class="flex flex-col md:flex-row gap-4 items-center justify-center w-full max-w-xl">
-      <Input type="url" name="figmaURL" id="figmaURL" placeholder="Paste your Figma file URL" required class="flex-1"/>
-      <Button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white py-3 px-6 rounded-lg transition-colors duration-200">Preview</Button>
+    <form id="figmaForm" class="flex flex-col sm:flex-row gap-4 items-center justify-center w-full max-w-2xl mb-8">
+      <Input
+        type="url"
+        name="figmaURL"
+        id="figmaURL"
+        placeholder="Paste your Figma file URL"
+        required
+        class="flex-1 px-4 py-3 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+      />
+      <Button
+        type="submit"
+        class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md transform hover:scale-105"
+      >
+        Preview
+      </Button>
     </form>
 
-    <div id="previewContainer" class="mt-8 w-full max-w-4xl text-left"></div>
+    <div id="previewContainer" class="w-full max-w-4xl text-left"></div>
   </section>
 
-  <script type="module">
+  <script is:inline>
     const form = document.getElementById("figmaForm");
     const previewContainer = document.getElementById("previewContainer");
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const url = document.getElementById("figmaURL").value.trim();
-      previewContainer.innerHTML = "<p>Loading...</p>";
+      previewContainer.innerHTML = "<p class='text-gray-500'>Loading preview...</p>";
 
       if (!url) {
         previewContainer.innerHTML = '<p class="text-red-500">Please enter a Figma file URL.</p>';
@@ -43,36 +59,37 @@ import Layout from "@/layouts/Layout.astro";
           return;
         }
 
-        // Embed Figma preview
         previewContainer.innerHTML = `
-          <div class="mb-4">
+          <div class="mb-6 p-4 bg-white rounded-lg shadow">
             <p><strong>Total Frames:</strong> ${data.totalFrames}</p>
             <p><strong>Frames with Text (Sections):</strong> ${data.totalSections}</p>
           </div>
-          <iframe style="border:1px solid rgba(0,0,0,0.1);" width="100%" height="600" src="${data.embedUrl}" allowfullscreen></iframe>
-          <div id="sectionsContainer" class="mt-6"></div>
+          <iframe
+            src="${data.embedUrl}"
+            class="w-full h-96 border border-gray-200 rounded-lg shadow mb-6"
+            allowfullscreen
+          ></iframe>
+          <div id="sectionsContainer" class="grid gap-6"></div>
         `;
 
         const sectionsContainer = document.getElementById("sectionsContainer");
 
-        // Render each frame as a copyable Astro component
         data.sections.forEach(section => {
           const sectionEl = document.createElement("div");
-
-          // Escape HTML for display in <pre>
           const codeEscaped = section.code.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
           sectionEl.innerHTML = `
-            <div class="mb-8 p-4 border rounded-lg shadow-sm bg-white">
+            <div class="p-4 border rounded-lg shadow-sm bg-white">
               <h3 class="text-xl font-semibold mb-2">${section.component}.astro</h3>
               <pre class="bg-gray-100 p-3 rounded mb-4 overflow-x-auto">${codeEscaped}</pre>
-              <button class="bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded copyButton">Copy to clipboard</button>
+              <button class="bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded copyButton transition-colors duration-200">
+                Copy to clipboard
+              </button>
             </div>
           `;
           sectionsContainer.appendChild(sectionEl);
         });
 
-        // Copy-to-clipboard functionality
         sectionsContainer.querySelectorAll(".copyButton").forEach(btn => {
           btn.addEventListener("click", () => {
             const pre = btn.previousElementSibling;
