@@ -1,19 +1,27 @@
 ---
 const year = new Date().getFullYear();
-import { navLinks } from "@/lib/consts";
+import { navLinks, logo } from "@/lib/consts";
 ---
 
-<footer class="bg-white rounded-lg shadow-sm dark:bg-gray-800">
+<footer class="bg-orange-700 shadow-sm">
     <div
         class="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between"
     >
-        <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400"
+        <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
+            <span class="rounded-full bg-white p-2">
+                <img src={logo} alt="Figstro Logo" class="w-8" /></span
+            >
+            <span class="self-center text-white text-2xl font-semibold whitespace-nowrap"
+                >Figstro</span
+            >
+        </a>
+        <span class="text-sm text-white font-bold sm:text-center"
             >© {year}
             <a href="/" class="hover:underline">Figstro</a>. All Rights
             Reserved.
         </span>
         <ul
-            class="flex flex-wrap items-center mt-3 text-sm font-medium text-gray-500 dark:text-gray-400 sm:mt-0"
+            class="flex flex-wrap items-center mt-3 text-sm font-medium text-white sm:mt-0"
         >
             {
                 navLinks.map((navLink: any) => (

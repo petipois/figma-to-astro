@@ -71,7 +71,7 @@ const collectTextNodes = (node: any): string[] => {
   return texts;
 };
 
-// Extract Tailwind styles
+// Tailwind styles
 const getTailwindFill = (node: any) => {
   if (!node.fills) return "";
   const solid = node.fills.find((f: any) => f.type === "SOLID");
@@ -100,63 +100,19 @@ const generateAstroCode = (componentName: string, node: any, textNodes: string[]
 
   switch (componentName) {
     case "Header":
-      return `---
-const { title } = Astro.props;
----
-<header class="mb-8 p-8 text-center ${bg} ${shadow} ${border}" id="${uniqueName}">
-  <h1 class="${textStyle}">${textContent}</h1>
-</header>`;
+      return `---\nconst { title } = Astro.props;\n---\n<header class="mb-8 p-8 text-center ${bg} ${shadow} ${border}" id="${uniqueName}">\n  <h1 class="${textStyle}">${textContent}</h1>\n</header>`;
     case "Hero":
-      return `---
-const { textContent="${textContent}", buttonText="Call To Action", buttonLink="#" } = Astro.props;
----
-<section class="py-8 px-4 mx-auto max-w-screen-xl text-center ${bg} ${shadow} ${border}" id="${uniqueName}">
-  <h1 class="${textStyle} font-extrabold mb-4">${textContent}</h1>
-  <a href={buttonLink} class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-white rounded-lg bg-blue-700 hover:bg-blue-800">{buttonText}</a>
-</section>`;
+      return `---\nconst { textContent="${textContent}", buttonText="Call To Action", buttonLink="#" } = Astro.props;\n---\n<section class="py-8 px-4 mx-auto max-w-screen-xl text-center ${bg} ${shadow} ${border}" id="${uniqueName}">\n  <h1 class="${textStyle} font-extrabold mb-4">${textContent}</h1>\n  <a href={buttonLink} class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-white rounded-lg bg-blue-700 hover:bg-blue-800">{buttonText}</a>\n</section>`;
     case "Card":
-      return `---
-const { textContent="${textContent}", link="#" } = Astro.props;
----
-<a href={link} id="${uniqueName}" class="block max-w-sm p-6 rounded-lg ${bg} ${shadow} ${border} hover:bg-gray-100">
-  <h5 class="${textStyle} mb-2 font-bold">${textContent}</h5>
-  <p class="font-normal text-gray-700">Card description here.</p>
-</a>`;
+      return `---\nconst { textContent="${textContent}", link="#" } = Astro.props;\n---\n<a href={link} id="${uniqueName}" class="block max-w-sm p-6 rounded-lg ${bg} ${shadow} ${border} hover:bg-gray-100">\n  <h5 class="${textStyle} mb-2 font-bold">${textContent}</h5>\n  <p class="font-normal text-gray-700">Card description here.</p>\n</a>`;
     case "Navbar":
-      return `---
-const { navList } = Astro.props;
----
-<nav class="mb-8 p-4 flex justify-between items-center ${bg} ${shadow} ${border}" id="${uniqueName}">
-  <ul class="flex gap-4">
-    {navList.map(item => (
-      <li>{item}</li>
-    ))}
-  </ul>
-</nav>`;
+      return `---\nconst { navList } = Astro.props;\n---\n<nav class="mb-8 p-4 flex justify-between items-center ${bg} ${shadow} ${border}" id="${uniqueName}">\n  <ul class="flex gap-4">{navList.map(item => (<li>{item}</li>))}</ul>\n</nav>`;
     case "Testimonial":
-      return `---
-const { testimonies } = Astro.props;
----
-<section class="mb-8 p-6 rounded-lg ${bg} ${shadow} ${border}" id="${uniqueName}">
-  {testimonies.map(t => (
-    <blockquote class="italic mb-2">"{t}"</blockquote>
-  ))}
-</section>`;
+      return `---\nconst { testimonies } = Astro.props;\n---\n<section class="mb-8 p-6 rounded-lg ${bg} ${shadow} ${border}" id="${uniqueName}">\n  {testimonies.map(t => (<blockquote class="italic mb-2">"{t}"</blockquote>))}\n</section>`;
     case "Footer":
-      return `---
-const year = new Date().getFullYear();
----
-<footer class="mt-8 p-6 text-center ${bg} ${shadow} ${border}" id="${uniqueName}">
-  <p>${textContent} | @ {year} All rights reserved</p>
-</footer>`;
+      return `---\nconst year = new Date().getFullYear();\n---\n<footer class="mt-8 p-6 text-center ${bg} ${shadow} ${border}" id="${uniqueName}">\n  <p>${textContent} | @ {year} All rights reserved</p>\n</footer>`;
     default:
-      return `---
-const { title } = Astro.props;
----
-<section class="mb-8 p-4 rounded-lg ${bg} ${shadow} ${border}" id="${uniqueName}">
-  <h2 class="text-2xl font-semibold mb-2">${uniqueName}</h2>
-  <pre class="bg-gray-100 p-3 rounded mb-4 overflow-x-auto">${textContent}</pre>
-</section>`;
+      return `---\nconst { title } = Astro.props;\n---\n<section class="mb-8 p-4 rounded-lg ${bg} ${shadow} ${border}" id="${uniqueName}">\n  <h2 class="text-2xl font-semibold mb-2">${uniqueName}</h2>\n  <pre class="bg-gray-100 p-3 rounded mb-4 overflow-x-auto">${textContent}</pre>\n</section>`;
   }
 };
 
@@ -167,17 +123,31 @@ const flattenFrames = (node: any, frames: any[]) => {
   node.children?.forEach((child: any) => flattenFrames(child, frames));
 };
 
+// Export POST route with CORS
 export const POST: APIRoute = async ({ request }) => {
+  const headers = {
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+  };
+
+  if (request.method === "OPTIONS") {
+    return new Response(null, { status: 204, headers });
+  }
+
   try {
     const formData = await request.formData();
     const figmaURL = formData.get("figmaURL")?.toString();
-    if (!figmaURL) return new Response(JSON.stringify({ message: "No Figma URL provided" }), { status: 400, headers: { "Content-Type": "application/json" } });
+    if (!figmaURL) return new Response(JSON.stringify({ message: "No Figma URL provided" }), { status: 400, headers });
 
     const match = figmaURL.match(/\/(?:file|design)\/([a-zA-Z0-9]+)/);
-    if (!match) return new Response(JSON.stringify({ message: "Invalid Figma URL" }), { status: 400, headers: { "Content-Type": "application/json" } });
+    if (!match) return new Response(JSON.stringify({ message: "Invalid Figma URL" }), { status: 400, headers });
 
     const fileKey = match[1];
-    const fileRes = await fetch(`https://api.figma.com/v1/files/${fileKey}`, { headers: { "X-Figma-Token": FIGMA_TOKEN } });
+    const fileRes = await fetch(`https://api.figma.com/v1/files/${fileKey}`, {
+      headers: { "X-Figma-Token": FIGMA_TOKEN }
+    });
     if (!fileRes.ok) throw new Error(`Figma API error: ${fileRes.status}`);
     const fileData = await fileRes.json();
 
@@ -185,11 +155,9 @@ export const POST: APIRoute = async ({ request }) => {
     flattenFrames(fileData.document, allFrames);
 
     const sections: Array<{ id: string; name: string; component: string; textNodes: string[]; code: string }> = [];
-    const includedTypes = new Set<string>();
     const singleTypes = ["Header", "Navbar", "Hero", "Section", "Footer"];
     const multipleTypes = ["Card", "Testimonial"];
 
-    // Include single types
     singleTypes.forEach((type) => {
       const frame = allFrames.find((f) => getComponentName(f) === type);
       if (!frame) return;
@@ -197,10 +165,8 @@ export const POST: APIRoute = async ({ request }) => {
       if (!textNodes.length) return;
       const uniqueName = getUniqueComponentName(type);
       sections.push({ id: frame.id, name: frame.name, component: uniqueName, textNodes, code: generateAstroCode(type, frame, textNodes, uniqueName) });
-      includedTypes.add(type);
     });
 
-    // Include multiple types
     multipleTypes.forEach((type) => {
       const frames = allFrames.filter((f) => getComponentName(f) === type);
       frames.forEach((frame) => {
@@ -217,10 +183,10 @@ export const POST: APIRoute = async ({ request }) => {
       totalFrames: allFrames.length,
       totalSections: sections.length,
       sections,
-      embedUrl: `https://www.figma.com/embed?embed_host=astra&url=${encodeURIComponent(figmaURL)}`,
-    }), { status: 200, headers: { "Content-Type": "application/json" } });
+      embedUrl: `https://www.figma.com/embed?embed_host=astra&url=${encodeURIComponent(figmaURL)}`
+    }), { status: 200, headers });
 
   } catch (error: any) {
-    return new Response(JSON.stringify({ message: "Error", error: error.message }), { status: 500, headers: { "Content-Type": "application/json" } });
+    return new Response(JSON.stringify({ message: "Error", error: error.message }), { status: 500, headers });
   }
 };

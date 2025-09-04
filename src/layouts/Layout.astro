@@ -2,7 +2,9 @@
 import "@/styles/starwind.css";
 const siteTitle = "Figma to Astro";
 const siteDescription =
-	"Figma to Astro is a tool to convert frames from figma to astro components";
+	"Figstro is a tool to convert Figma designs into basic Astro components";
+const siteKeywords =
+	"Figstro, Figstro Tool, Figma, Astro, Figma to Astro, Figma components, Astro components, web development, design to code, astro js, astro for beginners, prototype with astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 ---
@@ -11,11 +13,52 @@ import Footer from "@/components/Footer.astro";
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<meta name="description" content={siteDescription} />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>{siteTitle}</title>
+		<meta name="description" content={siteDescription} />
+		<meta name="keywords" content={siteKeywords} />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="canonical" href="https://yourdomain.com/" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap"
+			rel="stylesheet"
+		/>
+		<!-- Open Graph / Facebook -->
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content={siteTitle} />
+		<meta property="og:description" content={siteDescription} />
+		<meta
+			property="og:url"
+			content="https://figstro.appwrite.network/converter"
+		/>
+		<meta
+			property="og:image"
+			content="https://figstro.appwrite.network/images/logo.png"
+		/>
+
+		<!-- Twitter -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={siteTitle} />
+		<meta name="twitter:description" content={siteDescription} />
+		<meta
+			name="twitter:image"
+			content="https://figstro.appwrite.network/images/logo.png"
+		/>
+
+		<!-- Structured Data -->
+		<script type="application/ld+json">
+			{
+				"@context": "https://schema.org",
+				"@type": "WebSite",
+				"name": "{siteTitle}",
+				"url": "https://figstro.appwrite.network",
+				"description": "{siteDescription}"
+			}
+		</script>
+
+		<meta name="generator" content={Astro.generator} />
 	</head>
 	<body class="flex flex-col min-h-screen">
 		<Header />
@@ -26,9 +69,10 @@ import Footer from "@/components/Footer.astro";
 	</body>
 </html>
 
-<style>
+<style is:global>
 	html,
 	body {
+		font-family: "Raleway", sans-serif;
 		margin: 0;
 		padding: 0;
 		width: 100%;

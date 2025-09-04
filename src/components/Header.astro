@@ -1,18 +1,18 @@
 ---
-import {navLinks} from "../lib/consts.ts";
+import { Image } from "astro:assets";
+import { navLinks, logo } from "../lib/consts.ts";
 import Button from "./starwind/button";
 ---
 
-<nav class="bg-white border-gray-200 dark:bg-gray-900">
+<nav class="bg-white border-gray-200 border-b-2 border-black">
     <div
         class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4"
     >
-        <a
-            href="https://flowbite.com/"
-            class="flex items-center space-x-3 rtl:space-x-reverse"
-        >
-            <span
-                class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"
+        <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
+            <span class="rounded-full bg-black p-2">
+                <img src={logo} alt="Figstro Logo" class="w-8" /></span
+            >
+            <span class="self-center text-2xl font-semibold whitespace-nowrap"
                 >Figstro</span
             >
         </a>
@@ -54,7 +54,7 @@ import Button from "./starwind/button";
                         <li>
                             <a
                                 href={navLink.link}
-                                class="block py-2 px-3 md:p-0 text-white bg-blue-700 rounded-sm md:bg-transparent md:text-blue-700 md:dark:text-blue-500"
+                                class="block py-2 px-3 md:p-0 text-white bg-orange-700 hover:font-extrabold rounded-sm md:bg-transparent md:text-orange-700 md:dark:text-orange-500"
                                 aria-current="page"
                             >
                                 {navLink.label}
