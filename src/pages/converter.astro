@@ -1,0 +1,93 @@
+---
+import Input from "@/components/starwind/input";
+import Button from "@/components/starwind/button";
+import Layout from "@/layouts/Layout.astro";
+---
+
+<Layout>
+  <section class="flex flex-col items-center justify-center min-h-screen px-4 text-center">
+    <h1 class="text-4xl font-bold mb-4">Preview Your Figma File</h1>
+    <p class="text-gray-700 mb-6">Paste a Figma file URL below to see a live preview and generate Astro components.</p>
+
+    <form id="figmaForm" class="flex flex-col md:flex-row gap-4 items-center justify-center w-full max-w-xl">
+      <Input type="url" name="figmaURL" id="figmaURL" placeholder="Paste your Figma file URL" required class="flex-1"/>
+      <Button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white py-3 px-6 rounded-lg transition-colors duration-200">Preview</Button>
+    </form>
+
+    <div id="previewContainer" class="mt-8 w-full max-w-4xl text-left"></div>
+  </section>
+
+  <script type="module">
+    const form = document.getElementById("figmaForm");
+    const previewContainer = document.getElementById("previewContainer");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const url = document.getElementById("figmaURL").value.trim();
+      previewContainer.innerHTML = "<p>Loading...</p>";
+
+      if (!url) {
+        previewContainer.innerHTML = '<p class="text-red-500">Please enter a Figma file URL.</p>';
+        return;
+      }
+
+      try {
+        const formData = new FormData();
+        formData.append("figmaURL", url);
+
+        const res = await fetch("/api/convert", { method: "POST", body: formData });
+        const data = await res.json();
+
+        if (!res.ok) {
+          previewContainer.innerHTML = `<p class="text-red-500">${data.message || "Invalid Figma URL"}</p>`;
+          return;
+        }
+
+        // Embed Figma preview
+        previewContainer.innerHTML = `
+          <div class="mb-4">
+            <p><strong>Total Frames:</strong> ${data.totalFrames}</p>
+            <p><strong>Frames with Text (Sections):</strong> ${data.totalSections}</p>
+          </div>
+          <iframe style="border:1px solid rgba(0,0,0,0.1);" width="100%" height="600" src="${data.embedUrl}" allowfullscreen></iframe>
+          <div id="sectionsContainer" class="mt-6"></div>
+        `;
+
+        const sectionsContainer = document.getElementById("sectionsContainer");
+
+        // Render each frame as a copyable Astro component
+        data.sections.forEach(section => {
+          const sectionEl = document.createElement("div");
+
+          // Escape HTML for display in <pre>
+          const codeEscaped = section.code.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+          sectionEl.innerHTML = `
+            <div class="mb-8 p-4 border rounded-lg shadow-sm bg-white">
+              <h3 class="text-xl font-semibold mb-2">${section.component}.astro</h3>
+              <pre class="bg-gray-100 p-3 rounded mb-4 overflow-x-auto">${codeEscaped}</pre>
+              <button class="bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded copyButton">Copy to clipboard</button>
+            </div>
+          `;
+          sectionsContainer.appendChild(sectionEl);
+        });
+
+        // Copy-to-clipboard functionality
+        sectionsContainer.querySelectorAll(".copyButton").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const pre = btn.previousElementSibling;
+            if (pre) {
+              const code = pre.textContent.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+              navigator.clipboard.writeText(code);
+              btn.textContent = "Copied!";
+              setTimeout(() => btn.textContent = "Copy to clipboard", 1500);
+            }
+          });
+        });
+
+      } catch (err) {
+        previewContainer.innerHTML = `<p class="text-red-500">Error: ${err.message}</p>`;
+      }
+    });
+  </script>
+</Layout>

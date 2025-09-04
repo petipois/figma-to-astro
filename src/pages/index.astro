@@ -1,8 +1,36 @@
 ---
-
-import Layout from '../layouts/Layout.astro';
+import Layout from "../layouts/Layout.astro";
+import Button from "@/components/starwind/button";
 ---
 
 <Layout>
-	
+  <section
+    class="flex flex-col items-center justify-center min-h-screen px-6 bg-gradient-to-b from-orange-50 to-white text-center"
+  >
+    <!-- Main Title -->
+    <h1
+      class="text-6xl md:text-7xl font-extrabold mb-4 text-gray-900 drop-shadow-md"
+    >
+      Figstro
+    </h1>
+
+    <!-- Subtitle -->
+    <h2 class="text-lg md:text-2xl mb-12 text-gray-700 max-w-xl">
+      Add your Figma design URL and instantly get Astro components—no setup
+      required!
+    </h2>
+
+    <!-- CTA Button -->
+    <Button
+      href="/converter"
+      class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-4 px-8 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300"
+    >
+      Try it Free!
+    </Button>
+
+    <!-- Optional Hackathon Flair -->
+    <p class="mt-8 text-gray-500 text-sm md:text-base">
+      Built with ❤️ for the Appwrite Sites Hackathon
+    </p>
+  </section>
 </Layout>

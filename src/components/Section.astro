@@ -1,0 +1,27 @@
+---
+const { title, content } = Astro.props;
+---
+
+<section class="mb-8 p-4 border rounded-lg shadow-sm bg-white">
+  <h2 class="text-2xl font-semibold mb-2">{title}</h2>
+  <pre class="bg-gray-100 p-3 rounded mb-4 overflow-x-auto">{content}</pre>
+  <button
+    id="copyButton"
+    class="bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded transition-colors duration-200"
+  >
+    Copy to clipboard
+  </button>
+
+  <script type="module">
+    const button = document.getElementById("copyButton");
+    const pre = button.previousElementSibling;
+
+    button.addEventListener("click", () => {
+      if (pre) {
+        navigator.clipboard.writeText(pre.textContent)
+          .then(() => alert("Copied to clipboard!"))
+          .catch((err) => console.error("Copy failed:", err));
+      }
+    });
+  </script>
+</section>
