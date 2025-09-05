@@ -6,29 +6,12 @@ import Layout from "@/layouts/Layout.astro";
 
 <Layout>
   <section class="flex flex-col items-center justify-center min-h-screen px-6 text-center bg-gradient-to-b from-white to-orange-50">
-    <h1 class="text-5xl md:text-6xl font-extrabold mb-4 text-gray-900 drop-shadow-md">
-      Preview Your Figma File
-    </h1>
-    <p class="text-gray-700 mb-8 max-w-xl text-center">
-      Paste a Figma file URL below to see a live preview and generate ready-to-use Astro components instantly.
-    </p>
+    <h1 class="text-5xl md:text-6xl font-extrabold mb-4 text-gray-900 drop-shadow-md">Preview Your Figma File</h1>
+    <p class="text-gray-700 mb-8 max-w-xl text-center">Paste a Figma file URL below to see a live preview and generate ready-to-use Astro components instantly.</p>
 
     <form id="figmaForm" class="flex flex-col sm:flex-row gap-4 items-center justify-center w-full max-w-2xl mb-8">
-      <Input
-        type="url"
-        name="figmaURL"
-        value="https://www.figma.com/design/LdilSTSeMPzfJ4F2kj1ErR/Lush-Garden---Florist-Landing-Page-Design--Community-?node-id=0-1&p=f&t=7fvwODbtxSGZE8BK-0"
-        id="figmaURL"
-        placeholder="Paste your Figma file URL"
-        required
-        class="flex-1 px-4 py-3 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
-      />
-      <Button
-        type="submit"
-        class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md transform hover:scale-105"
-      >
-        Preview
-      </Button>
+      <Input type="url" name="figmaURL" id="figmaURL" placeholder="Paste your Figma file URL" required class="flex-1 px-4 py-3 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-400"/>
+      <Button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md transform hover:scale-105">Preview</Button>
     </form>
 
     <div id="previewContainer" class="w-full text-left"></div>
@@ -42,7 +25,7 @@ import Layout from "@/layouts/Layout.astro";
       e.preventDefault();
       const url = document.getElementById("figmaURL").value.trim();
       previewContainer.innerHTML = "<p class='text-gray-500'>Loading preview...</p>";
-      if (!url) return previewContainer.innerHTML = '<p class="text-red-500">Please enter a Figma file URL.</p>';
+      if (!url) return previewContainer.innerHTML = '<p class="text-red-500">Please enter a Figma file URL</p>';
 
       try {
         const formData = new FormData();
@@ -50,7 +33,6 @@ import Layout from "@/layouts/Layout.astro";
 
         const res = await fetch("/api/convert", { method: "POST", body: formData });
         const data = await res.json();
-
         if (!res.ok) return previewContainer.innerHTML = `<p class="text-red-500">${data.message || "Invalid Figma URL"}</p>`;
 
         previewContainer.innerHTML = `
@@ -59,32 +41,27 @@ import Layout from "@/layouts/Layout.astro";
             <p><strong>Sections Detected:</strong> ${data.totalSections}</p>
           </div>
           <iframe src="${data.embedUrl}" class="w-full h-96 border border-gray-200 rounded-lg shadow mb-6" allowfullscreen></iframe>
-          <div id="sectionsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"></div>
+          <div id="sectionsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
         `;
 
-        const sectionsContainer = document.getElementById("sectionsContainer");
-
-        data.sections.forEach(section => {
-          const sectionEl = document.createElement("div");
-          const codeEscaped = section.code.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-          sectionEl.innerHTML = `
+        const container = document.getElementById("sectionsContainer");
+        data.sections.forEach(s => {
+          const el = document.createElement("div");
+          const codeEscaped = s.code.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+          el.innerHTML = `
             <div class="p-4 border rounded-lg shadow-sm bg-white">
-              <h3 class="text-xl font-semibold mb-2">${section.component}.astro</h3>
+              <h3 class="text-xl font-semibold mb-2">${s.component}.astro</h3>
               <pre class="bg-gray-100 p-3 rounded mb-4 overflow-x-auto">${codeEscaped}</pre>
-              <button class="bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded copyButton transition-colors duration-200">
-                Copy to clipboard
-              </button>
-            </div>
-          `;
-          sectionsContainer.appendChild(sectionEl);
+              <button class="bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded copyButton transition-colors duration-200">Copy to clipboard</button>
+            </div>`;
+          container.appendChild(el);
         });
 
-        sectionsContainer.querySelectorAll(".copyButton").forEach(btn => {
+        container.querySelectorAll(".copyButton").forEach(btn => {
           btn.addEventListener("click", () => {
             const pre = btn.previousElementSibling;
             if (!pre) return;
-            const code = pre.textContent.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
-            navigator.clipboard.writeText(code);
+            navigator.clipboard.writeText(pre.textContent.replace(/&lt;/g, "<").replace(/&gt;/g, ">"));
             btn.textContent = "Copied!";
             setTimeout(() => btn.textContent = "Copy to clipboard", 1500);
           });
