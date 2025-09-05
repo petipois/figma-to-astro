@@ -17,6 +17,7 @@ import Layout from "@/layouts/Layout.astro";
       <Input
         type="url"
         name="figmaURL"
+        value="https://www.figma.com/design/LdilSTSeMPzfJ4F2kj1ErR/Lush-Garden---Florist-Landing-Page-Design--Community-?node-id=0-1&p=f&t=7fvwODbtxSGZE8BK-0"
         id="figmaURL"
         placeholder="Paste your Figma file URL"
         required
@@ -30,22 +31,18 @@ import Layout from "@/layouts/Layout.astro";
       </Button>
     </form>
 
-    <div id="previewContainer" class="w-full max-w-4xl text-left"></div>
+    <div id="previewContainer" class="w-full text-left"></div>
   </section>
 
   <script is:inline>
     const form = document.getElementById("figmaForm");
     const previewContainer = document.getElementById("previewContainer");
 
-    form.addEventListener("submit", async (e) => {
+    form.addEventListener("submit", async e => {
       e.preventDefault();
       const url = document.getElementById("figmaURL").value.trim();
       previewContainer.innerHTML = "<p class='text-gray-500'>Loading preview...</p>";
-
-      if (!url) {
-        previewContainer.innerHTML = '<p class="text-red-500">Please enter a Figma file URL.</p>';
-        return;
-      }
+      if (!url) return previewContainer.innerHTML = '<p class="text-red-500">Please enter a Figma file URL.</p>';
 
       try {
         const formData = new FormData();
@@ -54,22 +51,15 @@ import Layout from "@/layouts/Layout.astro";
         const res = await fetch("/api/convert", { method: "POST", body: formData });
         const data = await res.json();
 
-        if (!res.ok) {
-          previewContainer.innerHTML = `<p class="text-red-500">${data.message || "Invalid Figma URL"}</p>`;
-          return;
-        }
+        if (!res.ok) return previewContainer.innerHTML = `<p class="text-red-500">${data.message || "Invalid Figma URL"}</p>`;
 
         previewContainer.innerHTML = `
           <div class="mb-6 p-4 bg-white rounded-lg shadow">
             <p><strong>Total Frames:</strong> ${data.totalFrames}</p>
-            <p><strong>Frames with Text (Sections):</strong> ${data.totalSections}</p>
+            <p><strong>Sections Detected:</strong> ${data.totalSections}</p>
           </div>
-          <iframe
-            src="${data.embedUrl}"
-            class="w-full h-96 border border-gray-200 rounded-lg shadow mb-6"
-            allowfullscreen
-          ></iframe>
-          <div id="sectionsContainer" class="grid gap-6"></div>
+          <iframe src="${data.embedUrl}" class="w-full h-96 border border-gray-200 rounded-lg shadow mb-6" allowfullscreen></iframe>
+          <div id="sectionsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"></div>
         `;
 
         const sectionsContainer = document.getElementById("sectionsContainer");
@@ -77,7 +67,6 @@ import Layout from "@/layouts/Layout.astro";
         data.sections.forEach(section => {
           const sectionEl = document.createElement("div");
           const codeEscaped = section.code.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
           sectionEl.innerHTML = `
             <div class="p-4 border rounded-lg shadow-sm bg-white">
               <h3 class="text-xl font-semibold mb-2">${section.component}.astro</h3>
@@ -93,12 +82,11 @@ import Layout from "@/layouts/Layout.astro";
         sectionsContainer.querySelectorAll(".copyButton").forEach(btn => {
           btn.addEventListener("click", () => {
             const pre = btn.previousElementSibling;
-            if (pre) {
-              const code = pre.textContent.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
-              navigator.clipboard.writeText(code);
-              btn.textContent = "Copied!";
-              setTimeout(() => btn.textContent = "Copy to clipboard", 1500);
-            }
+            if (!pre) return;
+            const code = pre.textContent.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+            navigator.clipboard.writeText(code);
+            btn.textContent = "Copied!";
+            setTimeout(() => btn.textContent = "Copy to clipboard", 1500);
           });
         });
 
