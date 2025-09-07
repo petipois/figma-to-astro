@@ -2,22 +2,40 @@
 import Input from "@/components/starwind/input";
 import Button from "@/components/starwind/button";
 import Layout from "@/layouts/Layout.astro";
-const figmaExample = "https://www.figma.com/design/LdilSTSeMPzfJ4F2kj1ErR/Lush-Garden---Florist-Landing-Page-Design--Community-?node-id=0-1&p=f&t=h7KBNr99U1MwC5JJ-0";
-const user = await Astro.locals.user;
-if(!user)
-{
+const figmaExample =
+  "https://www.figma.com/design/LdilSTSeMPzfJ4F2kj1ErR/Lush-Garden---Florist-Landing-Page-Design--Community-?node-id=0-1&p=f&t=h7KBNr99U1MwC5JJ-0";
+const user = Astro.locals.user;
+if (!user) {
   Astro.redirect("/");
 }
 ---
 
 <Layout>
-  <section class="flex flex-col items-center justify-center min-h-screen px-6 text-center bg-gradient-to-b from-white to-orange-50">
-    <h1 class="text-5xl md:text-6xl font-extrabold mb-4 text-gray-900 drop-shadow-md">Preview Your Figma File</h1>
+
+  <section
+    class="flex flex-col items-center justify-center min-h-screen px-6 text-center bg-gradient-to-b from-white to-orange-50"
+  >
+    {
+    (
+      <form action="/api/logout" method="POST">
+        <Button>Logout</Button>
+      </form>
+    )
+  }
+    <h1
+      class="text-5xl md:text-6xl font-extrabold mb-4 text-gray-900 drop-shadow-md"
+    >
+      Preview Your Figma File
+    </h1>
     <p class="text-gray-700 mb-8 max-w-xl text-center">
-      Paste a Figma file URL below to see a live preview and generate ready-to-use Astro components instantly.
+      Paste a Figma file URL below to see a live preview and generate
+      ready-to-use Astro components instantly.
     </p>
 
-    <form id="figmaForm" class="flex flex-col sm:flex-row gap-4 items-center justify-center w-full max-w-2xl mb-8">
+    <form
+      id="figmaForm"
+      class="flex flex-col sm:flex-row gap-4 items-center justify-center w-full max-w-2xl mb-8"
+    >
       <Input
         type="url"
         name="figmaURL"
@@ -42,27 +60,30 @@ if(!user)
     const form = document.getElementById("figmaForm");
     const previewContainer = document.getElementById("previewContainer");
 
-    form.addEventListener("submit", async e => {
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const url = document.getElementById("figmaURL").value.trim();
-      previewContainer.innerHTML = "<p class='text-gray-500'>Loading preview...</p>";
-      if (!url) return previewContainer.innerHTML = '<p class="text-red-500">Please enter a Figma file URL</p>';
+      previewContainer.innerHTML =
+        "<p class='text-gray-500'>Loading preview...</p>";
+      if (!url)
+        return (previewContainer.innerHTML =
+          '<p class="text-red-500">Please enter a Figma file URL</p>');
 
       try {
         const formData = new FormData();
         formData.append("figmaURL", url);
 
         // Updated to use relative URL - will call your local API route
-        const res = await fetch("/api/convert", { 
-          method: "POST", 
-          body: formData 
+        const res = await fetch("/api/convert", {
+          method: "POST",
+          body: formData,
         });
-        
+
         const data = await res.json();
-        
+
         if (!res.ok) {
-          console.error('API Error:', data);
-          return previewContainer.innerHTML = `<p class="text-red-500">${data.message || "Invalid Figma URL"}</p>`;
+          console.error("API Error:", data);
+          return (previewContainer.innerHTML = `<p class="text-red-500">${data.message || "Invalid Figma URL"}</p>`);
         }
 
         previewContainer.innerHTML = `
@@ -75,10 +96,12 @@ if(!user)
         `;
 
         const container = document.getElementById("sectionsContainer");
-        data.sections.forEach(s => {
+        data.sections.forEach((s) => {
           const el = document.createElement("div");
 
-          const codeEscaped = s.code.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+          const codeEscaped = s.code
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
 
           el.innerHTML = `
             <div class="p-4 border rounded-lg shadow-sm bg-white">
@@ -90,18 +113,19 @@ if(!user)
           container.appendChild(el);
         });
 
-        container.querySelectorAll(".copyButton").forEach(btn => {
+        container.querySelectorAll(".copyButton").forEach((btn) => {
           btn.addEventListener("click", () => {
             const pre = btn.previousElementSibling;
             if (!pre) return;
-            navigator.clipboard.writeText(pre.textContent.replace(/&lt;/g, "<").replace(/&gt;/g, ">"));
+            navigator.clipboard.writeText(
+              pre.textContent.replace(/&lt;/g, "<").replace(/&gt;/g, ">"),
+            );
             btn.textContent = "Copied!";
-            setTimeout(() => btn.textContent = "Copy to clipboard", 1500);
+            setTimeout(() => (btn.textContent = "Copy to clipboard"), 1500);
           });
         });
-
       } catch (err) {
-        console.error('Fetch Error:', err);
+        console.error("Fetch Error:", err);
         previewContainer.innerHTML = `<p class="text-red-500">Error: ${err.message}</p>`;
       }
     });

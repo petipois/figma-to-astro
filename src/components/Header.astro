@@ -47,13 +47,7 @@ const user = Astro.locals.user;
                     <DialogFooter />
                 </DialogContent>
             </Dialog>
-            {
-                user ? (
-                    <form action="/api/logout" method="POST">
-                        <Button>Logout</Button>
-                    </form>
-                ) : ("")
-            }
+           
             <button
                 data-collapse-toggle="navbar-cta"
                 type="button"
