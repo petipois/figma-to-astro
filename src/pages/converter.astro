@@ -2,16 +2,32 @@
 import Input from "@/components/starwind/input";
 import Button from "@/components/starwind/button";
 import Layout from "@/layouts/Layout.astro";
+const figmaExample = "https://www.figma.com/design/LdilSTSeMPzfJ4F2kj1ErR";
 ---
 
 <Layout>
   <section class="flex flex-col items-center justify-center min-h-screen px-6 text-center bg-gradient-to-b from-white to-orange-50">
     <h1 class="text-5xl md:text-6xl font-extrabold mb-4 text-gray-900 drop-shadow-md">Preview Your Figma File</h1>
-    <p class="text-gray-700 mb-8 max-w-xl text-center">Paste a Figma file URL below to see a live preview and generate ready-to-use Astro components instantly.</p>
+    <p class="text-gray-700 mb-8 max-w-xl text-center">
+      Paste a Figma file URL below to see a live preview and generate ready-to-use Astro components instantly.
+    </p>
 
     <form id="figmaForm" class="flex flex-col sm:flex-row gap-4 items-center justify-center w-full max-w-2xl mb-8">
-      <Input type="url" name="figmaURL" id="figmaURL" placeholder="Paste your Figma file URL" required class="flex-1 px-4 py-3 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-400"/>
-      <Button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md transform hover:scale-105">Preview</Button>
+      <Input
+        type="url"
+        name="figmaURL"
+        id="figmaURL"
+        placeholder="Paste your Figma file URL"
+        value={figmaExample}
+        required
+        class="flex-1 px-4 py-3 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+      />
+      <Button
+        type="submit"
+        class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md transform hover:scale-105"
+      >
+        Preview
+      </Button>
     </form>
 
     <div id="previewContainer" class="w-full text-left"></div>
@@ -47,13 +63,24 @@ import Layout from "@/layouts/Layout.astro";
         const container = document.getElementById("sectionsContainer");
         data.sections.forEach(s => {
           const el = document.createElement("div");
+
+          // Render preview using paragraphs for multiple lines
+          const sectionPreview = s.code
+            .split("\n")
+            .filter(line => line.trim())
+            .map(line => `<p class="mb-1">${line}</p>`)
+            .join("");
+
           const codeEscaped = s.code.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
           el.innerHTML = `
             <div class="p-4 border rounded-lg shadow-sm bg-white">
               <h3 class="text-xl font-semibold mb-2">${s.component}.astro</h3>
+              <div class="mb-4 border-b pb-2">${sectionPreview}</div>
               <pre class="bg-gray-100 p-3 rounded mb-4 overflow-x-auto">${codeEscaped}</pre>
               <button class="bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded copyButton transition-colors duration-200">Copy to clipboard</button>
-            </div>`;
+            </div>
+          `;
           container.appendChild(el);
         });
 

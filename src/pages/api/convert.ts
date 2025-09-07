@@ -38,13 +38,65 @@ const getComponentType = (name: string) => {
 };
 
 const generateAstroCode = (type: string, name: string, texts: string[], node: any) => {
-  const text = texts.join("\n") || name;
-  const exampleImage =
-    type === "Gallery"
-      ? `<img src="https://via.placeholder.com/150" alt="example" />`
-      : "";
-  return `---\nconst { title="${text}" } = Astro.props;\n---\n<section id="${name}" class="p-4 mb-4 border rounded bg-white shadow">\n  <h2 class="font-bold mb-2">${text}</h2>\n  ${exampleImage}\n</section>`;
+  if (!texts.length) texts = [name]; // fallback
+
+  if (type === "Navbar") {
+    // Render each text as a nav link
+    const links = texts.map(t => `<a href="#" class="text-gray-700 hover:text-orange-500 px-4 py-2">${t}</a>`).join("\n");
+    return `---
+const { title="${name}" } = Astro.props;
+---
+<nav id="${name}" class="p-4 mb-4 bg-white shadow rounded flex justify-center space-x-2">
+  ${links}
+</nav>`;
+  }
+
+  if (type === "Gallery") {
+    const images = texts.slice(0, 8).map((t, i) =>
+      `<div class="flex flex-col items-center">
+        <img src="https://via.placeholder.com/150?text=Image+${i + 1}" alt="${t}" class="rounded shadow mb-2"/>
+        <span class="text-sm text-gray-600 text-center">${t}</span>
+      </div>`
+    ).join("\n");
+
+    return `---
+const { title="${name}" } = Astro.props;
+---
+<section id="${name}" class="p-4 mb-4 border rounded bg-white shadow">
+  <h2 class="font-bold text-xl mb-4">${title}</h2>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    ${images}
+  </div>
+</section>`;
+  }
+
+  if (type === "Card") {
+    const title = texts[0];
+    const description = texts.slice(1, 5); // first 4 texts for description
+    const descriptionHtml = description.map(d => `<p class="text-gray-700 mb-2">${d}</p>`).join("\n");
+
+    return `---
+const { title="${title}" } = Astro.props;
+---
+<div id="${name}" class="p-4 mb-4 border rounded bg-white shadow hover:shadow-lg transition-shadow duration-200">
+  <h3 class="font-bold text-lg mb-2">${title}</h3>
+  ${descriptionHtml}
+  <img src="https://via.placeholder.com/300x150" alt="${title}" class="rounded mt-2"/>
+</div>`;
+  }
+
+  // Default section
+  const descriptionHtml = texts.slice(0, 5).map(t => `<p class="mb-2">${t}</p>`).join("\n");
+  return `---
+const { title="${name}" } = Astro.props;
+---
+<section id="${name}" class="p-4 mb-4 border rounded bg-white shadow">
+  <h2 class="font-bold mb-2">${name}</h2>
+  ${descriptionHtml}
+</section>`;
 };
+
+
 
 export const POST: APIRoute = async ({ request }) => {
   const headers = {
