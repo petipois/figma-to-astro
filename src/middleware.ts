@@ -14,7 +14,7 @@ export const onRequest = defineMiddleware(async ({ url, locals, redirect }, next
   }
 
   // Routes requiring login
-  const protectedRoutes = ['/converter', '/dashboard', '/profile'];
+  const protectedRoutes = ['/converter'];
   const authRoutes = ['/login', '/register'];
 
   const path = url.pathname; // ensure pathname is correct

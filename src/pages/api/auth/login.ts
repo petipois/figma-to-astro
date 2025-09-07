@@ -29,7 +29,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     return new Response(null, {
       status: 307, // Temporary redirect
       headers: {
-        Location: "/", // Home page
+        Location: "/converter", // Home page
       },
     });
 

@@ -61,3 +61,12 @@ export async function getCurrentUser() {
     return null;
   }
 }
+
+export async function updateUserPreferences(prefs: Record<string, any>) {
+  try {
+    return await account.updatePrefs(prefs);
+  } catch (error) {
+    console.error("Error updating user preferences:", error);
+    throw error;
+  }
+}

@@ -52,17 +52,13 @@ export const POST: APIRoute = async ({ request }) => {
     // Register the user
     const user = await registerUser(email, password, firstName, lastName);
     
-    return new Response(
-      JSON.stringify({ 
-        success: true,
-        message: "Account created successfully",
-        userId: user.$id
-      }),
-      { 
-        status: 201,
-        headers: { "Content-Type": "application/json" }
-      }
-    );
+      // Redirect to home page after successful login
+    return new Response(null, {
+      status: 307, // Temporary redirect
+      headers: {
+        Location: "/converter", // Home page
+      },
+    });
 
   } catch (error: any) {
     console.error("Registration error:", error);
