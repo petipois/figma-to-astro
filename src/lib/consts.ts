@@ -11,7 +11,11 @@ export const navLinks = [
         label: "Features",
         link: "/#features",
     },
-{
+    {
+        label: "Login",
+        link: "/login",
+    },
+    {
         label: "Register",
         link: "/register",
     },
@@ -22,7 +26,7 @@ export const loggedInLinks = [
         label: "Home",
         link: "/",
     },
-    
+
     {
         label: "Convert",
         link: "/converter",
