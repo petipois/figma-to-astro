@@ -63,7 +63,7 @@ const { title="${name}" } = Astro.props;
 const { title="${name}" } = Astro.props;
 ---
 <section id="${name}" class="p-4 mb-4 border rounded bg-white shadow">
-  <h2 class="font-bold text-xl mb-4">${title}</h2>
+  <h2 class="font-bold text-xl mb-4">{title}</h2>
   <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
     ${images}
   </div>
