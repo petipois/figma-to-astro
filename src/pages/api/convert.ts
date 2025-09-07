@@ -2,7 +2,10 @@ import type { APIRoute } from "astro";
 
 const FIGMA_TOKEN = import.meta.env.FIGMA_ACCESS_TOKEN;
 
-// Helpers
+// Add logging
+console.log('API Route loaded. FIGMA_TOKEN:', FIGMA_TOKEN ? 'Set' : 'Missing');
+
+// Helpers (same as before)
 const componentCounters: Record<string, number> = {};
 const getUniqueName = (base: string) => {
   componentCounters[base] = (componentCounters[base] || 0) + 1;
@@ -38,10 +41,9 @@ const getComponentType = (name: string) => {
 };
 
 const generateAstroCode = (type: string, name: string, texts: string[], node: any) => {
-  if (!texts.length) texts = [name]; // fallback
+  if (!texts.length) texts = [name];
 
   if (type === "Navbar") {
-    // Render each text as a nav link
     const links = texts.map(t => `<a href="#" class="text-gray-700 hover:text-orange-500 px-4 py-2">${t}</a>`).join("\n");
     return `---
 const { title="${name}" } = Astro.props;
@@ -70,9 +72,54 @@ const { title="${name}" } = Astro.props;
 </section>`;
   }
 
+  if (type === "Hero") {
+    // For Hero sections, create a hero with navbar
+    const navItems = texts.slice(0, 5); // Use first 5 texts as nav items
+    const heroTitle = texts[5] || name; // Use 6th text as hero title, fallback to name
+    const heroDescription = texts.slice(6, 8).join(" ") || "Welcome to our amazing service"; // Use next texts as description
+    
+    const navLinks = navItems.map(item => 
+      `        <a href="#" class="text-white hover:text-orange-300 px-4 py-2 transition-colors duration-200">${item}</a>`
+    ).join("\n");
+
+    return `---
+const { title="${heroTitle}" } = Astro.props;
+---
+<section id="${name}" class="relative min-h-screen bg-gradient-to-br from-green-600 to-green-800">
+  <!-- Navbar -->
+  <nav class="flex justify-between items-center p-6 text-white">
+    <div class="text-2xl font-bold">🌿 ${name}</div>
+    <div class="hidden md:flex space-x-1">
+${navLinks}
+    </div>
+    <button class="md:hidden text-white">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+    </button>
+  </nav>
+  
+  <!-- Hero Content -->
+  <div class="flex items-center justify-center min-h-[80vh] px-6 text-center">
+    <div class="max-w-4xl text-white">
+      <h1 class="text-5xl md:text-7xl font-bold mb-6">{title}</h1>
+      <p class="text-xl md:text-2xl mb-8 opacity-90">${heroDescription}</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <button class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-8 rounded-lg transition-all duration-200 transform hover:scale-105">
+          Get Started
+        </button>
+        <button class="border-2 border-white text-white hover:bg-white hover:text-green-800 font-semibold py-3 px-8 rounded-lg transition-all duration-200">
+          Learn More
+        </button>
+      </div>
+    </div>
+  </div>
+</section>`;
+  }
+
   if (type === "Card") {
     const title = texts[0];
-    const description = texts.slice(1, 5); // first 4 texts for description
+    const description = texts.slice(1, 5);
     const descriptionHtml = description.map(d => `<p class="text-gray-700 mb-2">${d}</p>`).join("\n");
 
     return `---
@@ -85,7 +132,6 @@ const { title="${title}" } = Astro.props;
 </div>`;
   }
 
-  // Default section
   const descriptionHtml = texts.slice(0, 5).map(t => `<p class="mb-2">${t}</p>`).join("\n");
   return `---
 const { title="${name}" } = Astro.props;
@@ -96,44 +142,72 @@ const { title="${name}" } = Astro.props;
 </section>`;
 };
 
-
-
 export const POST: APIRoute = async ({ request }) => {
+  console.log('API Route hit:', request.method, request.url);
+
   const headers = {
     "Content-Type": "application/json",
-    "Access-Control-Allow-Origin": "https://figstro.appwrite.network/",
+    "Access-Control-Allow-Origin": "*", // Changed for debugging
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
   };
 
-  if (request.method === "OPTIONS")
+  if (request.method === "OPTIONS") {
+    console.log('OPTIONS request handled');
     return new Response(null, { status: 204, headers });
+  }
 
   try {
+    // Check if FIGMA_TOKEN exists
+    if (!FIGMA_TOKEN) {
+      console.error('FIGMA_ACCESS_TOKEN not found in environment variables');
+      return new Response(
+        JSON.stringify({ message: "Server configuration error: Missing Figma token" }),
+        { status: 500, headers }
+      );
+    }
+
     const formData = await request.formData();
     const figmaURL = formData.get("figmaURL")?.toString();
-    if (!figmaURL)
+    console.log('Received figmaURL:', figmaURL);
+
+    if (!figmaURL) {
+      console.log('No figmaURL provided');
       return new Response(
         JSON.stringify({ message: "No Figma URL provided" }),
         { status: 400, headers }
       );
+    }
 
     const match = figmaURL.match(/\/(?:file|design)\/([a-zA-Z0-9]+)/);
-    if (!match)
+    if (!match) {
+      console.log('Invalid Figma URL format');
       return new Response(JSON.stringify({ message: "Invalid Figma URL" }), {
         status: 400,
         headers,
       });
+    }
     const fileKey = match[1];
+    console.log('Extracted fileKey:', fileKey);
 
+    console.log('Making request to Figma API...');
     const res = await fetch(`https://api.figma.com/v1/files/${fileKey}`, {
       headers: { "X-Figma-Token": FIGMA_TOKEN },
     });
-    if (!res.ok) throw new Error(`Figma API error ${res.status}`);
+
+    console.log('Figma API response status:', res.status);
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error('Figma API error:', res.status, errorText);
+      throw new Error(`Figma API error ${res.status}: ${errorText}`);
+    }
+
     const data = await res.json();
+    console.log('Figma data received, processing...');
 
     const allFrames: any[] = [];
     flattenFrames(data.document, allFrames);
+    console.log('Found frames:', allFrames.length);
 
     const sections: any[] = [];
     const seenTypes = new Set<string>();
@@ -141,13 +215,11 @@ export const POST: APIRoute = async ({ request }) => {
     allFrames.forEach((f) => {
       const type = getComponentType(f.name);
 
-      // Skip duplicates for card/blog/testimonial (only one instance)
       if (["Card", "Blog", "Testimonial"].includes(type)) {
         if (seenTypes.has(type)) return;
         seenTypes.add(type);
       }
 
-      // Skip long container frames (frames that only wrap others and no text)
       const texts = collectTextNodes(f);
       const hasChildFrames =
         f.children && f.children.some((c: any) => c.type === "FRAME");
@@ -162,21 +234,26 @@ export const POST: APIRoute = async ({ request }) => {
       });
     });
 
-    return new Response(
-      JSON.stringify({
-        figmaURL,
-        fileKey,
-        totalFrames: allFrames.length,
-        totalSections: sections.length,
-        sections,
-        embedUrl: `https://www.figma.com/embed?embed_host=astra&url=${encodeURIComponent(
-          figmaURL
-        )}`,
-      }),
-      { status: 200, headers }
-    );
+    console.log('Generated sections:', sections.length);
+
+    const response = {
+      figmaURL,
+      fileKey,
+      totalFrames: allFrames.length,
+      totalSections: sections.length,
+      sections,
+      embedUrl: `https://www.figma.com/embed?embed_host=astra&url=${encodeURIComponent(figmaURL)}`,
+    };
+
+    console.log('Sending successful response');
+    return new Response(JSON.stringify(response), { status: 200, headers });
+
   } catch (err: any) {
-    return new Response(JSON.stringify({ message: err.message }), {
+    console.error('API Route error:', err);
+    return new Response(JSON.stringify({ 
+      message: err.message,
+      error: process.env.NODE_ENV === 'development' ? err.stack : undefined 
+    }), {
       status: 500,
       headers,
     });
