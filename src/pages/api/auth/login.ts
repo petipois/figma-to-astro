@@ -13,7 +13,11 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         { status: 400, headers: { "Content-Type": "application/json" } }
       );
     }
-
+const headers = {
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "https://figstro.appwrite.network", // your frontend origin
+    "Access-Control-Allow-Credentials": "true",
+  };
     // Login the user
     const session = await loginUser(email, password);
 
