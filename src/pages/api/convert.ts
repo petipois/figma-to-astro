@@ -101,7 +101,7 @@ const { title="${name}" } = Astro.props;
 export const POST: APIRoute = async ({ request }) => {
   const headers = {
     "Content-Type": "application/json",
-    "Access-Control-Allow-Origin": "https://figstro.appwrite.network",
+    "Access-Control-Allow-Origin": "https://figstro.appwrite.network/",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
   };
