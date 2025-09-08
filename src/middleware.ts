@@ -1,3 +1,13 @@
-import { clerkMiddleware } from '@clerk/astro/server'
+import { clerkMiddleware, createRouteMatcher } from '@clerk/astro/server'
 
-export const onRequest = clerkMiddleware()
+const isProtectedRoute = createRouteMatcher(['/converter(.*)'])
+
+export const onRequest = clerkMiddleware((auth, context) => {
+  const { redirectToSignIn, userId } = auth()
+
+  if (!userId && isProtectedRoute(context.request)) {
+    // Add custom logic to run before redirecting
+
+    return redirectToSignIn()
+  }
+})

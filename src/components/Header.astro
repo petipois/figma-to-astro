@@ -6,7 +6,6 @@ import {
     SignedIn,
     SignedOut,
     SignInButton,
-    SignIn,
     UserButton,
     SignOutButton,
 } from "@clerk/astro/components";
@@ -25,7 +24,7 @@ import {
             >
         </a>
         <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-            <SignedIn> <SignOutButton class="bg-red|s`` p-2 text-white rounded-md"/> </SignedIn>
+            <SignedIn> <SignOutButton class="bg-red-500 p-2 text-white rounded-md"/> </SignedIn>
             <SignedOut>
                 <SignInButton
                     mode="modal"
@@ -76,7 +75,7 @@ import {
                                 </a>
                             </li>
                         ))
-                    }
+                    }<UserButton/>
                 </SignedIn>
                 <SignedOut>
                     {

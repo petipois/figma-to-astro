@@ -1,4 +1,5 @@
 ---
+import { howItWorksSteps } from "@/lib/consts";
 import Layout from "../layouts/Layout.astro";
 import Button from "@/components/starwind/button";
 ---
@@ -7,27 +8,37 @@ import Button from "@/components/starwind/button";
   <span slot="title">Figstro - Convert Figma to Astro Components</span>
 
   <!-- Hero Section -->
-  <section class="relative flex flex-col items-center justify-center min-h-screen text-center bg-gradient-to-br from-orange-50 via-white to-orange-50 px-6 py-20">
-    
+  <section
+    class="relative flex flex-col items-center justify-center min-h-screen text-center bg-gradient-to-br from-orange-50 via-white to-orange-50 px-6 py-20"
+  >
     <div class="relative z-10 max-w-4xl mx-auto">
-      <h1 class="text-5xl md:text-7xl lg:text-8xl font-extrabold mb-6 text-gray-900 tracking-tight">
-        <span class="bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent">
+      <h1
+        class="text-5xl md:text-7xl lg:text-8xl font-extrabold mb-6 text-gray-900 tracking-tight"
+      >
+        <span
+          class="bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent"
+        >
           Figstro
         </span>
       </h1>
-      
-      <h2 class="text-xl md:text-2xl lg:text-3xl mb-8 text-gray-700 max-w-3xl mx-auto leading-relaxed">
-        Transform your Figma designs into clean Astro components instantly—no setup, no hassle
+
+      <h2
+        class="text-xl md:text-2xl lg:text-3xl mb-8 text-gray-700 max-w-3xl mx-auto leading-relaxed"
+      >
+        Transform your Figma designs into clean Astro components instantly—no
+        setup, no hassle
       </h2>
-      
-      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+
+      <div
+        class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
+      >
         <Button
           href="/converter"
           class="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold py-4 px-8 rounded-2xl shadow-xl transform hover:scale-105 transition-all duration-300 hover:shadow-2xl"
         >
           Start Converting Free →
         </Button>
-        
+
         <Button
           href="#how-it-works"
           class="border-2 border-orange-500 text-orange-600 hover:bg-orange-50 font-semibold py-4 px-8 rounded-2xl transition-all duration-300"
@@ -35,7 +46,7 @@ import Button from "@/components/starwind/button";
           See How It Works
         </Button>
       </div>
-      
+
       <p class="text-sm text-gray-500">
         No registration required • Instant preview • Clean code output
       </p>
@@ -50,126 +61,207 @@ import Button from "@/components/starwind/button";
           How It Works
         </h2>
         <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-          Three simple steps to convert your Figma designs to production-ready Astro components
+          Three simple steps to convert your Figma designs to production-ready
+          Astro components
         </p>
       </div>
-      
+
       <div class="grid md:grid-cols-3 gap-8 lg:gap-12">
-        <div class="group relative p-8 bg-gradient-to-br from-orange-50 to-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
-          <div class="absolute -top-4 -left-4 w-12 h-12 bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center text-white font-bold text-xl shadow-lg">
-            1
-          </div>
-          <h3 class="text-2xl font-bold mb-4 text-gray-900 mt-4">Paste Your URL</h3>
-          <p class="text-gray-700 leading-relaxed">
-            Copy your Figma design link and paste it into our intelligent converter. We'll automatically detect your frames and components.
-          </p>
-        </div>
-        
-        <div class="group relative p-8 bg-gradient-to-br from-orange-50 to-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
-          <div class="absolute -top-4 -left-4 w-12 h-12 bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center text-white font-bold text-xl shadow-lg">
-            2
-          </div>
-          <h3 class="text-2xl font-bold mb-4 text-gray-900 mt-4">Preview Instantly</h3>
-          <p class="text-gray-700 leading-relaxed">
-            See a live, interactive preview of your Figma frames rendered directly in the browser before converting to code.
-          </p>
-        </div>
-        
-        <div class="group relative p-8 bg-gradient-to-br from-orange-50 to-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
-          <div class="absolute -top-4 -left-4 w-12 h-12 bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center text-white font-bold text-xl shadow-lg">
-            3
-          </div>
-          <h3 class="text-2xl font-bold mb-4 text-gray-900 mt-4">Generate Clean Code</h3>
-          <p class="text-gray-700 leading-relaxed">
-            Get perfectly structured Astro components with clean, maintainable code ready for your project in seconds.
-          </p>
-        </div>
+        {
+          howItWorksSteps.map((step: any) => (
+            <div class="group relative p-8 bg-gradient-to-br from-orange-50 to-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
+              <div class="absolute -top-4 -left-4 w-12 h-12 bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                {step.number}
+              </div>
+              <h3 class="text-2xl font-bold mb-4 text-gray-900 mt-4">
+                {step.title}
+              </h3>
+              <p class="text-gray-700 leading-relaxed">{step.content} </p>
+            </div>
+          ))
+        }
       </div>
     </div>
   </section>
 
   <!-- Features Section -->
-  <section class="py-20 px-6 bg-gradient-to-br from-gray-50 to-white" id="features">
+  <section
+    class="py-20 px-6 bg-gradient-to-br from-gray-50 to-white"
+    id="features"
+  >
     <div class="max-w-7xl mx-auto">
       <div class="text-center mb-16">
         <h2 class="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
           Why Choose Figstro?
         </h2>
         <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-          Built for developers who want to move fast without compromising on code quality
+          Built for developers who want to move fast without compromising on
+          code quality
         </p>
       </div>
-      
+
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <div class="p-8 bg-white rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
-          <div class="w-16 h-16 bg-gradient-to-r from-green-400 to-green-500 rounded-2xl flex items-center justify-center mb-6">
-            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+        <div
+          class="p-8 bg-white rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100"
+        >
+          <div
+            class="w-16 h-16 bg-gradient-to-r from-green-400 to-green-500 rounded-2xl flex items-center justify-center mb-6"
+          >
+            <svg
+              class="w-8 h-8 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 10V3L4 14h7v7l9-11h-7z"></path>
             </svg>
           </div>
           <h3 class="text-2xl font-bold mb-4 text-gray-900">Lightning Fast</h3>
           <p class="text-gray-700 leading-relaxed">
-            Convert designs to code in seconds, not hours. Perfect for hackathons, rapid prototyping, and tight deadlines.
+            Convert designs to code in seconds, not hours. Perfect for
+            hackathons, rapid prototyping, and tight deadlines.
           </p>
         </div>
-        
-        <div class="p-8 bg-white rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
-          <div class="w-16 h-16 bg-gradient-to-r from-blue-400 to-blue-500 rounded-2xl flex items-center justify-center mb-6">
-            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+
+        <div
+          class="p-8 bg-white rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100"
+        >
+          <div
+            class="w-16 h-16 bg-gradient-to-r from-blue-400 to-blue-500 rounded-2xl flex items-center justify-center mb-6"
+          >
+            <svg
+              class="w-8 h-8 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
             </svg>
           </div>
           <h3 class="text-2xl font-bold mb-4 text-gray-900">Clean Code</h3>
           <p class="text-gray-700 leading-relaxed">
-            Generated Astro components follow best practices with semantic HTML, organized CSS, and maintainable structure.
+            Generated Astro components follow best practices with semantic HTML,
+            organized CSS, and maintainable structure.
           </p>
         </div>
-        
-        <div class="p-8 bg-white rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
-          <div class="w-16 h-16 bg-gradient-to-r from-purple-400 to-purple-500 rounded-2xl flex items-center justify-center mb-6">
-            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+
+        <div
+          class="p-8 bg-white rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100"
+        >
+          <div
+            class="w-16 h-16 bg-gradient-to-r from-purple-400 to-purple-500 rounded-2xl flex items-center justify-center mb-6"
+          >
+            <svg
+              class="w-8 h-8 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+              ></path>
             </svg>
           </div>
-          <h3 class="text-2xl font-bold mb-4 text-gray-900">Beginner Friendly</h3>
+          <h3 class="text-2xl font-bold mb-4 text-gray-900">
+            Beginner Friendly
+          </h3>
           <p class="text-gray-700 leading-relaxed">
-            No complex setup or configuration. Just paste your URL and get started—perfect for designers learning to code.
+            No complex setup or configuration. Just paste your URL and get
+            started—perfect for designers learning to code.
           </p>
         </div>
-        
-        <div class="p-8 bg-white rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
-          <div class="w-16 h-16 bg-gradient-to-r from-red-400 to-red-500 rounded-2xl flex items-center justify-center mb-6">
-            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+
+        <div
+          class="p-8 bg-white rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100"
+        >
+          <div
+            class="w-16 h-16 bg-gradient-to-r from-red-400 to-red-500 rounded-2xl flex items-center justify-center mb-6"
+          >
+            <svg
+              class="w-8 h-8 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+              ></path>
             </svg>
           </div>
           <h3 class="text-2xl font-bold mb-4 text-gray-900">Pixel Perfect</h3>
           <p class="text-gray-700 leading-relaxed">
-            Maintain design fidelity with accurate spacing, colors, and typography that matches your Figma designs exactly.
+            Maintain design fidelity with accurate spacing, colors, and
+            typography that tries to matches your Figma designs.
           </p>
         </div>
-        
-        <div class="p-8 bg-white rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
-          <div class="w-16 h-16 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-2xl flex items-center justify-center mb-6">
-            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+
+        <div
+          class="p-8 bg-white rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100"
+        >
+          <div
+            class="w-16 h-16 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-2xl flex items-center justify-center mb-6"
+          >
+            <svg
+              class="w-8 h-8 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+              ></path>
             </svg>
           </div>
           <h3 class="text-2xl font-bold mb-4 text-gray-900">Free Forever</h3>
           <p class="text-gray-700 leading-relaxed">
-            Core features are completely free with no hidden costs. Premium features available for advanced workflows.
+            Core features are completely free with no hidden costs. Premium
+            features available for advanced workflows.
           </p>
         </div>
-        
-        <div class="p-8 bg-white rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
-          <div class="w-16 h-16 bg-gradient-to-r from-indigo-400 to-indigo-500 rounded-2xl flex items-center justify-center mb-6">
-            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+
+        <div
+          class="p-8 bg-white rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100"
+        >
+          <div
+            class="w-16 h-16 bg-gradient-to-r from-indigo-400 to-indigo-500 rounded-2xl flex items-center justify-center mb-6"
+          >
+            <svg
+              class="w-8 h-8 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+              ></path>
             </svg>
           </div>
-          <h3 class="text-2xl font-bold mb-4 text-gray-900">Secure & Private</h3>
+          <h3 class="text-2xl font-bold mb-4 text-gray-900">
+            Secure & Private
+          </h3>
           <p class="text-gray-700 leading-relaxed">
-            Your designs are processed securely and never stored. We respect your privacy and intellectual property.
+            Your designs are processed securely and never stored. We respect
+            your privacy and intellectual property.
           </p>
         </div>
       </div>
@@ -177,23 +269,26 @@ import Button from "@/components/starwind/button";
   </section>
 
   <!-- Call-to-Action Section -->
-  <section class="py-20 px-6 bg-gradient-to-r from-orange-500 to-orange-600 text-white">
+  <section
+    class="py-20 px-6 bg-gradient-to-r from-orange-500 to-orange-600 text-white"
+  >
     <div class="max-w-4xl mx-auto text-center">
       <h2 class="text-4xl md:text-5xl font-bold mb-6">
         Ready to Transform Your Workflow?
       </h2>
       <p class="text-xl md:text-2xl mb-10 text-orange-100 leading-relaxed">
-        Join thousands of developers who've already streamlined their design-to-code process with Figstro
+        Join thousands of developers who've already streamlined their
+        design-to-code process with Figstro
       </p>
-      
+
       <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
         <Button
           href="/converter"
           class="bg-white text-orange-600 hover:bg-gray-50 font-semibold py-4 px-8 rounded-2xl shadow-xl transform hover:scale-105 transition-all duration-300 hover:shadow-2xl"
         >
-          Start Converting Now →
+          Start Converting Now
         </Button>
-        
+
         <Button
           href="/register"
           class="border-2 border-white text-white hover:bg-white hover:text-orange-600 font-semibold py-4 px-8 rounded-2xl transition-all duration-300"
@@ -201,9 +296,9 @@ import Button from "@/components/starwind/button";
           Create Free Account
         </Button>
       </div>
-      
+
       <p class="text-sm text-orange-200 mt-6">
-        No credit card required • Get started in under 30 seconds
+        Get started in under 30 seconds
       </p>
     </div>
   </section>

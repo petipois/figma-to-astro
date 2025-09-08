@@ -15,10 +15,6 @@ export const navLinks = [
         label: "Login",
         link: "/login",
     },
-    {
-        label: "Register",
-        link: "/register",
-    },
 
 ];
 export const loggedInLinks = [
@@ -40,3 +36,21 @@ export const loggedInLinks = [
     },
 ];
 export const logo = "../images/logo.png";
+
+export const howItWorksSteps = [
+  {
+    number: 1,
+    title: "Paste Your URL",
+    content: "Copy your Figma design link and paste it into our intelligent converter. We'll automatically detect your frames and components."
+  },
+  {
+    number: 2,
+    title: "Preview Your File",
+    content: "See a live, interactive preview of your Figma file."
+  },
+  {
+    number: 3,
+    title: "Generate Clean Code",
+    content: "Get perfectly structured Astro components with clean, maintainable code ready for your project in seconds."
+  }
+];
