@@ -34,6 +34,10 @@ export const loggedInLinks = [
         label: "Convert",
         link: "/converter",
     },
+      {
+        label: "Profile",
+        link: "/profile",
+    },
 ];
 export const logo = "../images/logo.png";
 
