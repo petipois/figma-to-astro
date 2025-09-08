@@ -1,28 +1,14 @@
 ---
-import RegisterForm from "@/components/RegisterForm.astro";
 import Layout from "../layouts/Layout.astro";
-import Button from "@/components/starwind/button";
+import { SignUp } from "@clerk/astro/components";
 ---
 
-<Layout>
+<Layout title="Figstro - Register">
     <div
         class="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-50 flex items-center justify-center px-6 py-12"
     >
         <div class="relative z-10 w-full max-w-md">
-            <!-- Logo/Title -->
-            <div class="text-center mb-8">
-                <h1 class="text-4xl font-bold text-gray-900 mb-2">
-                    <span
-                        class="bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent"
-                    >
-                        Figstro
-                    </span>
-                </h1>
-                <p class="text-gray-600">Create your free account</p>
-            </div>
-
-           <RegisterForm/>
-             <a href="/login">Already registered? Login instead</a>
+            <SignUp />
         </div>
     </div>
 </Layout>

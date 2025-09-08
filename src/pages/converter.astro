@@ -4,10 +4,7 @@ import Button from "@/components/starwind/button";
 import Layout from "@/layouts/Layout.astro";
 const figmaExample =
   "https://www.figma.com/design/LdilSTSeMPzfJ4F2kj1ErR/Lush-Garden---Florist-Landing-Page-Design--Community-?node-id=0-1&p=f&t=h7KBNr99U1MwC5JJ-0";
-const user = Astro.locals.user;
-if (!user) {
-  Astro.redirect("/");
-}
+
 ---
 
 <Layout>
@@ -15,13 +12,13 @@ if (!user) {
   <section
     class="flex flex-col items-center justify-center min-h-screen px-6 text-center bg-gradient-to-b from-white to-orange-50"
   >
-    {
-    (
-      <form action="/api/logout" method="POST">
+    
+    
+      <form action="/api/auth/logout" method="POST">
         <Button>Logout</Button>
       </form>
-    )
-  }
+    
+  
     <h1
       class="text-5xl md:text-6xl font-extrabold mb-4 text-gray-900 drop-shadow-md"
     >

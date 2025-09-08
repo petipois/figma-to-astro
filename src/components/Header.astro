@@ -1,20 +1,15 @@
 ---
-import {
-    Dialog,
-    DialogTrigger,
-    DialogContent,
-    DialogClose,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogFooter,
-} from "./starwind/dialog";
-import { loggedInLinks, navLinks, logo } from "../lib/consts.ts";
+import { loggedInLinks } from "../lib/consts.ts";
+import { navLinks, logo } from "../lib/consts.ts";
 import Button from "./starwind/button";
-import RegisterForm from "./RegisterForm.astro";
-import LoginForm from "./LoginForm.astro";
-
-const user = Astro.locals.user;
+import {
+    SignedIn,
+    SignedOut,
+    SignInButton,
+    SignIn,
+    UserButton,
+    SignOutButton,
+} from "@clerk/astro/components";
 ---
 
 <nav class="bg-white border-gray-200 border-b-2 border-black">
@@ -23,31 +18,20 @@ const user = Astro.locals.user;
     >
         <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
             <span class="rounded-full bg-black p-2">
-                <img src={logo} alt="Figstro Logo" class="w-8" />
-            </span>
+                <img src={logo} alt="Figstro Logo" class="w-8" /></span
+            >
             <span class="self-center text-2xl font-semibold whitespace-nowrap"
                 >Figstro</span
             >
         </a>
-
         <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-            <Dialog>
-                <DialogTrigger asChild>
-                    <Button>Get Started</Button>
-                </DialogTrigger>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Figstro - Get Started</DialogTitle>
-                        <DialogDescription>
-                            A free account is needed to start converting your
-                            figma designs to Astro Components.
-                        </DialogDescription>
-                    </DialogHeader>
-                    {user ? <LoginForm /> : <RegisterForm />}
-                    <DialogFooter />
-                </DialogContent>
-            </Dialog>
-           
+            <SignedIn> <SignOutButton class="bg-red|s`` p-2 text-white rounded-md"/> </SignedIn>
+            <SignedOut>
+                <SignInButton
+                    mode="modal"
+                    class="bg-black p-2 text-white rounded-md"
+                />
+            </SignedOut>
             <button
                 data-collapse-toggle="navbar-cta"
                 type="button"
@@ -72,7 +56,6 @@ const user = Astro.locals.user;
                 </svg>
             </button>
         </div>
-
         <div
             class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
             id="navbar-cta"
@@ -80,31 +63,36 @@ const user = Astro.locals.user;
             <ul
                 class="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700"
             >
-                {
-                    user
-                        ? loggedInLinks.map((navLink: any) => (
-                              <li>
-                                  <a
-                                      href={navLink.link}
-                                      class="block py-2 px-3 md:p-0 text-white bg-orange-700 hover:font-extrabold rounded-sm md:bg-transparent md:text-orange-700 md:dark:text-orange-500"
-                                      aria-current="page"
-                                  >
-                                      {navLink.label}
-                                  </a>
-                              </li>
-                          ))
-                        : navLinks.map((navLink: any) => (
-                              <li>
-                                  <a
-                                      href={navLink.link}
-                                      class="block py-2 px-3 md:p-0 text-white bg-orange-700 hover:font-extrabold rounded-sm md:bg-transparent md:text-orange-700 md:dark:text-orange-500"
-                                      aria-current="page"
-                                  >
-                                      {navLink.label}
-                                  </a>
-                              </li>
-                          ))
-                }
+                <SignedIn>
+                    {
+                        loggedInLinks.map((navLink: any) => (
+                            <li>
+                                <a
+                                    href={navLink.link}
+                                    class="block py-2 px-3 md:p-0 text-white bg-orange-700 hover:font-extrabold rounded-sm md:bg-transparent md:text-orange-700 md:dark:text-orange-500"
+                                    aria-current="page"
+                                >
+                                    {navLink.label}
+                                </a>
+                            </li>
+                        ))
+                    }
+                </SignedIn>
+                <SignedOut>
+                    {
+                        navLinks.map((navLink: any) => (
+                            <li>
+                                <a
+                                    href={navLink.link}
+                                    class="block py-2 px-3 md:p-0 text-white bg-orange-700 hover:font-extrabold rounded-sm md:bg-transparent md:text-orange-700 md:dark:text-orange-500"
+                                    aria-current="page"
+                                >
+                                    {navLink.label}
+                                </a>
+                            </li>
+                        ))
+                    }
+                </SignedOut>
             </ul>
         </div>
     </div>

@@ -26,7 +26,14 @@ export const loggedInLinks = [
         label: "Home",
         link: "/",
     },
-
+ {
+        label: "How It Works",
+        link: "/#how-it-works",
+    },
+    {
+        label: "Features",
+        link: "/#features",
+    },
     {
         label: "Convert",
         link: "/converter",
