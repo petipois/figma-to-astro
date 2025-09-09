@@ -1,7 +1,31 @@
 import type { APIRoute } from "astro";
 
-const FIGMA_TOKEN = import.meta.env.FIGMA_ACCESS_TOKEN;
+const FIGMA_TOKEN = import.meta.env.FIGMA_ACCESS_TOKEN ||
+  process.env.FIGMA_ACCESS_TOKEN;
+console.log(FIGMA_TOKEN)
 
+export const GET: APIRoute = async () => {
+  const headers = {
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*", // Temporarily allow all origins for testing
+  };
+
+  return new Response(
+    JSON.stringify({
+      environment: "production",
+      timestamp: new Date().toISOString(),
+      envCheck: {
+        hasFigmaToken: !!FIGMA_TOKEN,
+        tokenLength: FIGMA_TOKEN?.length || 0,
+        tokenStart: FIGMA_TOKEN?.substring(0, 10) + "..." || "undefined",
+        allEnvKeys: Object.keys(import.meta.env),
+        nodeEnv: import.meta.env.NODE_ENV || "not set"
+      },
+      figmaApiTest: "Will test if token exists"
+    }),
+    { status: 200, headers }
+  );
+};
 // Helpers
 const componentCounters: Record<string, number> = {};
 const getUniqueName = (base: string) => {
@@ -126,10 +150,11 @@ export const POST: APIRoute = async ({ request }) => {
       });
     const fileKey = match[1];
 
-    const res = await fetch(`https://api.figma.com/v1/files/${fileKey}`, {
-      headers: { "X-Figma-Token": FIGMA_TOKEN,
+    const res = await fetch(`https://api.figma.com/v1/files/${fileKey}/dev_resources`, {
+      headers: {
+        "X-Figma-Token": FIGMA_TOKEN,
         "User-Agent": "Appwrite-Sites-Bot/1.0",
-       },
+      },
     });
     if (!res.ok) throw new Error(`Figma API error ${res.status}`);
     const data = await res.json();
