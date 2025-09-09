@@ -150,7 +150,7 @@ export const POST: APIRoute = async ({ request }) => {
       });
     const fileKey = match[1];
 
-    const res = await fetch(`https://api.figma.com/v1/files/${fileKey}/dev_resources`, {
+    const res = await fetch(`https://api.figma.com/v1/files/${fileKey}`, {
       headers: {
         "X-Figma-Token": FIGMA_TOKEN,
         "User-Agent": "Appwrite-Sites-Bot/1.0",
