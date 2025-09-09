@@ -1,3 +1,4 @@
+import { updateCredits } from "@/lib/appwrite";
 import type { APIRoute } from "astro";
 
 const FIGMA_TOKEN = import.meta.env.FIGMA_ACCESS_TOKEN ||
@@ -128,15 +129,16 @@ export const POST: APIRoute = async ({ request }) => {
     "Access-Control-Allow-Origin": SITE_ORIGIN,
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
+    "Vary": "Origin"
   };
 
   if (request.method === "OPTIONS")
     return new Response(null, { status: 204, headers });
-
   try {
     const formData = await request.formData();
     const figmaURL = formData.get("figmaURL")?.toString();
     if (!figmaURL)
+      
       return new Response(
         JSON.stringify({ message: "No Figma URL provided" }),
         { status: 400, headers }

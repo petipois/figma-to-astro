@@ -1,5 +1,4 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/astro/server'
-
 // Only protect specific routes, exclude API routes
 const isProtectedRoute = createRouteMatcher([
   '/converter(.*)', 

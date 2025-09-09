@@ -1,30 +1,44 @@
 ---
 import { loggedInLinks, navLinks, logo } from "../lib/consts.ts";
+const user = await Astro.locals.currentUser();
 import {
   SignedIn,
   SignedOut,
   SignInButton,
-  UserButton,
   SignOutButton,
 } from "@clerk/astro/components";
-
-const userCredits = 10;
+import Button from "./starwind/button";
+import { getUserInfo } from "@/lib/appwrite";
+let userCredits = 1;
+if (user) {
+  const credits = await getUserInfo(user.id);
+  userCredits = credits?.credits;
+}
 ---
 
 <nav class="bg-white border-b-2 border-black">
-  <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+  <div
+    class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4"
+  >
     <!-- Logo -->
     <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
       <span class="rounded-full bg-black p-2">
         <img src={logo} alt="Figstro Logo" class="w-8" />
       </span>
-      <span class="self-center text-2xl font-semibold whitespace-nowrap">Figstro</span>
+      <span class="self-center text-2xl font-semibold whitespace-nowrap"
+        >Figstro</span
+      >
     </a>
 
     <!-- Right side buttons -->
-    <div class="flex md:order-2 items-center space-x-3 md:space-x-0 rtl:space-x-reverse">
+    <div
+      class="flex md:order-2 items-center space-x-3 md:space-x-0 rtl:space-x-reverse"
+    >
       <SignedIn>
         <h3 class="mr-3 font-bold">Credits: {userCredits}</h3>
+        <Button class="bg-orange-700 text-white rounded-md"
+          >Reset Credits</Button
+        >
         <SignOutButton class="bg-red-500 p-2 text-white rounded-md" />
       </SignedIn>
 
@@ -53,8 +67,7 @@ const userCredits = 10;
             stroke-linecap="round"
             stroke-linejoin="round"
             stroke-width="2"
-            d="M1 1h15M1 7h15M1 13h15"
-          />
+            d="M1 1h15M1 7h15M1 13h15"></path>
         </svg>
       </button>
     </div>
@@ -64,38 +77,42 @@ const userCredits = 10;
       class="hidden md:flex md:w-auto md:order-1 items-center justify-between w-full"
       id="navbar-cta"
     >
-      <ul class="flex flex-col md:flex-row md:space-x-8 font-medium p-4 md:p-0 mt-4 md:mt-0 border md:border-0 rounded-lg border-gray-100 bg-gray-50 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-        
+      <ul
+        class="flex flex-col md:flex-row md:space-x-8 font-medium p-4 md:p-0 mt-4 md:mt-0 border md:border-0 rounded-lg border-gray-100 bg-gray-50 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700"
+      >
         <!-- Logged-in links -->
         <SignedIn>
-          {loggedInLinks.map((link) => (
-            <li>
-              <a
-                href={link.link}
-                class="block py-2 px-3 md:p-0 text-white bg-orange-700 hover:font-extrabold rounded-sm md:bg-transparent md:text-orange-700 md:dark:text-orange-500"
-                aria-current="page"
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
+          {
+            loggedInLinks.map((link) => (
+              <li>
+                <a
+                  href={link.link}
+                  class="block py-2 px-3 md:p-0 text-white bg-orange-700 hover:font-extrabold rounded-sm md:bg-transparent md:text-orange-700 md:dark:text-orange-500"
+                  aria-current="page"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
         </SignedIn>
 
         <!-- Logged-out links -->
         <SignedOut>
-          {navLinks.map((link, index) => (
-            <li >
-              <a
-                href={link.link}
-                class="block py-2 px-3 md:p-0 text-white bg-orange-700 hover:font-extrabold rounded-sm md:bg-transparent md:text-orange-700 md:dark:text-orange-500"
-                aria-current="page"
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
+          {
+            navLinks.map((link, index) => (
+              <li>
+                <a
+                  href={link.link}
+                  class="block py-2 px-3 md:p-0 text-white bg-orange-700 hover:font-extrabold rounded-sm md:bg-transparent md:text-orange-700 md:dark:text-orange-500"
+                  aria-current="page"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
         </SignedOut>
-
       </ul>
     </div>
   </div>
