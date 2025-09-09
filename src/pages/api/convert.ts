@@ -127,7 +127,9 @@ export const POST: APIRoute = async ({ request }) => {
     const fileKey = match[1];
 
     const res = await fetch(`https://api.figma.com/v1/files/${fileKey}`, {
-      headers: { "X-Figma-Token": FIGMA_TOKEN },
+      headers: { "X-Figma-Token": FIGMA_TOKEN,
+        "User-Agent": "Appwrite-Sites-Bot/1.0",
+       },
     });
     if (!res.ok) throw new Error(`Figma API error ${res.status}`);
     const data = await res.json();
