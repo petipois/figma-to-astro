@@ -14,17 +14,7 @@ const figmaExample =
   "https://www.figma.com/design/LdilSTSeMPzfJ4F2kj1ErR/Lush-Garden---Florist-Landing-Page-Design--Community-?node-id=0-1&p=f&t=h7KBNr99U1MwC5JJ-0";
 
 
-  // If user is logged in, create credit account if first login
-  if (user) {
-    try {
-      console.log(user)
-      // Example: you could check if a credit account exists first
-      // For simplicity, let's create one unconditionally for now
-      await createCreditAccount(user.id);
-    } catch (error) {
-      console.error('Failed to create credit account:', error);
-    }
-  }
+  
 ---
 
 <Layout>
