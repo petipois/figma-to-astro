@@ -3,10 +3,7 @@ import Input from "@/components/starwind/input";
 import Button from "@/components/starwind/button";
 import Layout from "@/layouts/Layout.astro";
 const user = await Astro.locals.currentUser();
-import { createCreditAccount } from "@/lib/appwrite";
-if (!user) {
-    return Astro.redirect("/");
-}
+
 
 let enoughCredits = 10;
 /*if (user) {

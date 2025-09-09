@@ -9,11 +9,11 @@ import {
 } from "@clerk/astro/components";
 import Button from "./starwind/button";
 import { getUserInfo } from "@/lib/appwrite";
-let userCredits = 1;
-if (user) {
+let userCredits = 10;
+/*if (user) {
   const credits = await getUserInfo(user.id);
   userCredits = credits?.credits;
-}
+}*/
 ---
 
 <nav class="bg-white border-b-2 border-black">
