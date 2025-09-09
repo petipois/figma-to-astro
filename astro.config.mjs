@@ -6,15 +6,15 @@ import clerk from "@clerk/astro";
 import vue from "@astrojs/vue";
 // https://astro.build/config
 export default defineConfig({
-  integrations:[clerk(), vue()],
+  integrations: [clerk(), vue()],
   output: "server",
-  
+
   vite: {
     plugins: [tailwindcss()],
   },
 
-   adapter: node({
-    mode: 'middleware',
+  adapter: node({
+    mode: 'standalone',
   }),
 
   // Security headers for production

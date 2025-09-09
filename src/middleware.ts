@@ -1,13 +1,27 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/astro/server'
 
-const isProtectedRoute = createRouteMatcher(['/converter(.*)'])
+// Only protect specific routes, exclude API routes
+const isProtectedRoute = createRouteMatcher([
+  '/converter(.*)', 
+   '/profile(.*)',
+])
+
+// Allow API routes and public routes
+const isPublicRoute = createRouteMatcher([
+  '/api(.*)', // Allow all API routes
+  '/', 
+])
 
 export const onRequest = clerkMiddleware((auth, context) => {
   const { redirectToSignIn, userId } = auth()
   
+  // Skip authentication for public routes (including API routes)
+  if (isPublicRoute(context.request)) {
+    return
+  }
+  
+  // Require authentication for protected routes
   if (!userId && isProtectedRoute(context.request)) {
-    // Add custom logic to run before redirecting
-
     return redirectToSignIn()
   }
 })
