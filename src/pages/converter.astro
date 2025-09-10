@@ -19,7 +19,7 @@ const figmaExample =
       Preview Your Figma File
     </h1>
     <p class="text-gray-700 mb-8 max-w-xl text-center">
-      Paste a Figma file URL below to see a live preview and generate ready-to-use Astro components instantly.
+      Paste a Figma file URL below to see a live preview.
     </p>
 
     <form id="figmaForm" class="flex flex-col sm:flex-row gap-4 items-center justify-center w-full max-w-2xl mb-8">
@@ -37,7 +37,7 @@ const figmaExample =
         id="previewButton"
         class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
       >
-        Preview & Generate
+        Preview
       </Button>
     </form>
 
@@ -48,15 +48,13 @@ const figmaExample =
       </div>
       <div class="flex justify-between mt-2 text-sm text-gray-600">
         <span id="step1" class="font-medium">1. Fetching Figma data...</span>
-        <span id="step2" class="opacity-50">2. Generating components...</span>
-        <span id="step3" class="opacity-50">3. Complete!</span>
       </div>
     </div>
 
     <div id="previewContainer" class="w-full text-left"></div>
   </section>
 
-  <script is:inline>
+  <!-- <script is:inline>
     const form = document.getElementById("figmaForm");
     const previewContainer = document.getElementById("previewContainer");
     const previewButton = document.getElementById("previewButton");
@@ -327,5 +325,96 @@ const figmaExample =
       };
       return colors[type] || 'gray';
     }
-  </script>
+  </script>-->
+  <script is:inline>
+  const form = document.getElementById("figmaForm");
+  const previewContainer = document.getElementById("previewContainer");
+  const previewButton = document.getElementById("previewButton");
+  const progressIndicator = document.getElementById("progressIndicator");
+  const progressBar = document.getElementById("progressBar");
+  const step1 = document.getElementById("step1");
+
+  function updateProgress(percentage) {
+    progressBar.style.width = `${percentage}%`;
+  }
+
+  function showError(message) {
+    previewContainer.innerHTML = `<div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+      <p class="text-red-700 font-medium">❌ Error</p>
+      <p class="text-red-600">${message}</p>
+    </div>`;
+  }
+
+  function showSuccess(message) {
+    const successDiv = document.createElement('div');
+    successDiv.className = 'bg-green-50 border border-green-200 rounded-lg p-4 mb-6';
+    successDiv.innerHTML = `
+      <p class="text-green-700 font-medium">✅ Success</p>
+      <p class="text-green-600">${message}</p>
+    `;
+    previewContainer.insertBefore(successDiv, previewContainer.firstChild);
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const url = document.getElementById("figmaURL").value.trim();
+
+    if (!url) {
+      showError('Please enter a Figma file URL');
+      return;
+    }
+
+    // Reset UI
+    previewContainer.innerHTML = "";
+    progressIndicator.classList.remove('hidden');
+    previewButton.disabled = true;
+    previewButton.textContent = 'Fetching...';
+    updateProgress(10);
+
+    try {
+      const formData = new FormData();
+      formData.append("figmaURL", url);
+
+      const res = await fetch("/api/getFile", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        console.error("API Error:", data);
+        showError(data.message || "Failed to fetch Figma file");
+        return;
+      }
+
+      updateProgress(80);
+
+      // Display some basic info
+      const fileName = data.figmaData.name || "Unknown Figma File";
+      const componentsCount = Object.keys(data.figmaData.components || {}).length;
+
+      previewContainer.innerHTML = `
+        <div class="mb-6 p-6 bg-white rounded-lg shadow-lg">
+          <h3 class="font-bold text-lg mb-2 text-gray-900">Figma File: ${fileName}</h3>
+          <p class="text-gray-700 mb-2">File Key: ${data.fileKey}</p>
+          <p class="text-gray-700 mb-2">Components Found: ${componentsCount}</p>
+        </div>
+      `;
+
+      showSuccess(`Figma file fetched successfully!`);
+      updateProgress(100);
+
+    } catch (err) {
+      console.error("Fetch Error:", err);
+      showError(`Failed to fetch Figma file: ${err.message}`);
+    } finally {
+      progressIndicator.classList.add('hidden');
+      previewButton.disabled = false;
+      previewButton.textContent = 'Preview & Generate';
+      updateProgress(0);
+    }
+  });
+</script>
+
 </Layout>
