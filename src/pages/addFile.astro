@@ -1,7 +1,6 @@
 ---
-import Input from "@/components/starwind/input";
-import Button from "@/components/starwind/button";
 import Layout from "@/layouts/Layout.astro";
+import Figstro from "@/components/Figstro.vue";
 const user = await Astro.locals.currentUser();
 
 let enoughCredits = 10;
@@ -11,40 +10,5 @@ const figmaExample =
 ---
 
 <Layout>
-    <section
-        class="flex flex-col items-center justify-center min-h-screen px-6 text-center bg-gradient-to-b from-white to-orange-50"
-    >
-        <h1
-            class="text-5xl md:text-6xl font-extrabold mb-4 text-gray-900 drop-shadow-md"
-        >
-            Add Your Figma File
-        </h1>
-        <p class="text-gray-700 mb-8 max-w-xl text-center">
-            Paste a Figma file URL below to see a live preview and generate
-            ready-to-use Astro components instantly.
-        </p>
-
-        <form
-        method="POST"
-        action="/api/getFile"
-            id="figmaForm"
-            class="flex flex-col sm:flex-row gap-4 items-center justify-center w-full max-w-2xl mb-8"
-        >
-            <Input
-                type="url"
-                name="figmaURL"
-                id="figmaURL"
-                placeholder="Paste your Figma file URL"
-                value={figmaExample}
-                required
-                class="flex-1 px-4 py-3 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
-            />
-            <Button
-                type="submit"
-                class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-            >
-                Add File
-            </Button>
-        </form>
-    </section></Layout
->
+   <Figstro client:load/>
+</Layout>
