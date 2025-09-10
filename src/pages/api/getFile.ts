@@ -25,7 +25,7 @@ export const POST: APIRoute = async ({ request }) => {
 
     const fileKey = match[1];
 
-    const figmaRes = await fetch(`https://api.figma.com/v1/files/${fileKey}`, {
+    /*const figmaRes = await fetch(`https://api.figma.com/v1/files/${fileKey}`, {
       headers: {
         "X-Figma-Token": FIGMA_TOKEN
       }
@@ -37,9 +37,9 @@ export const POST: APIRoute = async ({ request }) => {
         status: figmaRes.status,
         headers: { "Content-Type": "application/json" }
       });
-    }
+    }*/
 
-    const figmaData = await figmaRes.json();
+    const figmaData = fileKey;
 
     return new Response(JSON.stringify({ success: true, fileKey, figmaData }), {
       headers: { "Content-Type": "application/json" }
