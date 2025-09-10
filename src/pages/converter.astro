@@ -293,7 +293,16 @@ const figmaExample =
 
       } catch (err) {
         console.error("Processing Error:", err);
-        showError(`Processing failed: ${err.message}`);
+        
+        // Check if it's a network/CORS error
+        if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
+          showError(
+            'Network connection failed. This might be a CORS issue or the server is not responding.', 
+            `Error: ${err.message}\n\nTroubleshooting:\n1. Check if the API server is running\n2. Verify CORS configuration\n3. Check browser console for more details`
+          );
+        } else {
+          showError(`Processing failed: ${err.message}`, err.stack);
+        }
       } finally {
         // Reset UI
         progressIndicator.classList.add('hidden');

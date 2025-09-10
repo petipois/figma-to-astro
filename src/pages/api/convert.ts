@@ -5,6 +5,17 @@ const FIGMA_TOKEN = import.meta.env.FIGMA_ACCESS_TOKEN ||
 
 const SITE_ORIGIN = "*";
 
+// Add OPTIONS handler for CORS preflight
+export const OPTIONS: APIRoute = async () => {
+  const headers = {
+    "Access-Control-Allow-Origin": SITE_ORIGIN,
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Access-Control-Max-Age": "86400",
+  };
+  return new Response(null, { status: 204, headers });
+};
+
 export const GET: APIRoute = async () => {
   const headers = {
     "Content-Type": "application/json",

@@ -2,6 +2,17 @@ import type { APIRoute } from "astro";
 
 const SITE_ORIGIN = "*";
 
+// Add OPTIONS handler for CORS preflight
+export const OPTIONS: APIRoute = async () => {
+  const headers = {
+    "Access-Control-Allow-Origin": SITE_ORIGIN,
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Access-Control-Max-Age": "86400",
+  };
+  return new Response(null, { status: 204, headers });
+};
+
 // Component generation helpers
 const componentCounters: Record<string, number> = {};
 
