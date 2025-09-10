@@ -1,10 +1,10 @@
-import { updateCredits } from "@/lib/appwrite";
 import type { APIRoute } from "astro";
 
 const FIGMA_TOKEN = import.meta.env.FIGMA_ACCESS_TOKEN ||
   process.env.FIGMA_ACCESS_TOKEN;
-console.log(FIGMA_TOKEN)
-const SITE_ORIGIN="https://figstro.appwrite.network"
+
+const SITE_ORIGIN = "*";
+
 export const GET: APIRoute = async () => {
   const headers = {
     "Content-Type": "application/json",
@@ -27,13 +27,8 @@ export const GET: APIRoute = async () => {
     { status: 200, headers }
   );
 };
-// Helpers
-const componentCounters: Record<string, number> = {};
-const getUniqueName = (base: string) => {
-  componentCounters[base] = (componentCounters[base] || 0) + 1;
-  return componentCounters[base] > 1 ? `${base}${componentCounters[base]}` : base;
-};
 
+// Helper functions for processing Figma data
 const collectTextNodes = (node: any): string[] => {
   if (!node) return [];
   let texts: string[] = [];
@@ -62,67 +57,6 @@ const getComponentType = (name: string) => {
   return "Card";
 };
 
-const generateAstroCode = (type: string, name: string, texts: string[], node: any) => {
-  if (!texts.length) texts = [name]; // fallback
-
-  if (type === "Navbar") {
-    // Render each text as a nav link
-    const links = texts.map(t => `<a href="#" class="text-gray-700 hover:text-orange-500 px-4 py-2">${t}</a>`).join("\n");
-    return `---
-const { title="${name}" } = Astro.props;
----
-<nav id="${name}" class="p-4 mb-4 bg-white shadow rounded flex justify-center space-x-2">
-  ${links}
-</nav>`;
-  }
-
-  if (type === "Gallery") {
-    const images = texts.slice(0, 8).map((t, i) =>
-      `<div class="flex flex-col items-center">
-        <img src="https://via.placeholder.com/150?text=Image+${i + 1}" alt="${t}" class="rounded shadow mb-2"/>
-        <span class="text-sm text-gray-600 text-center">${t}</span>
-      </div>`
-    ).join("\n");
-
-    return `---
-const { title="${name}" } = Astro.props;
----
-<section id="${name}" class="p-4 mb-4 border rounded bg-white shadow">
-  <h2 class="font-bold text-xl mb-4">{title}</h2>
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-    ${images}
-  </div>
-</section>`;
-  }
-
-  if (type === "Card") {
-    const title = texts[0];
-    const description = texts.slice(1, 5); // first 4 texts for description
-    const descriptionHtml = description.map(d => `<p class="text-gray-700 mb-2">${d}</p>`).join("\n");
-
-    return `---
-const { title="${title}" } = Astro.props;
----
-<div id="${name}" class="p-4 mb-4 border rounded bg-white shadow hover:shadow-lg transition-shadow duration-200">
-  <h3 class="font-bold text-lg mb-2">${title}</h3>
-  ${descriptionHtml}
-  <img src="https://via.placeholder.com/300x150" alt="${title}" class="rounded mt-2"/>
-</div>`;
-  }
-
-  // Default section
-  const descriptionHtml = texts.slice(0, 5).map(t => `<p class="mb-2">${t}</p>`).join("\n");
-  return `---
-const { title="${name}" } = Astro.props;
----
-<section id="${name}" class="p-4 mb-4 border rounded bg-white shadow">
-  <h2 class="font-bold mb-2">${name}</h2>
-  ${descriptionHtml}
-</section>`;
-};
-
-
-
 export const POST: APIRoute = async ({ request }) => {
   const headers = {
     "Content-Type": "application/json",
@@ -134,80 +68,86 @@ export const POST: APIRoute = async ({ request }) => {
 
   if (request.method === "OPTIONS")
     return new Response(null, { status: 204, headers });
+
   try {
     const formData = await request.formData();
     const figmaURL = formData.get("figmaURL")?.toString();
-    if (!figmaURL)
-      
+    
+    if (!figmaURL) {
       return new Response(
         JSON.stringify({ message: "No Figma URL provided" }),
         { status: 400, headers }
       );
+    }
 
+    // Extract file key from Figma URL
     const match = figmaURL.match(/\/(?:file|design)\/([a-zA-Z0-9]+)/);
-    if (!match)
-      return new Response(JSON.stringify({ message: "Invalid Figma URL" }), {
-        status: 400,
-        headers,
-      });
+    if (!match) {
+      return new Response(
+        JSON.stringify({ message: "Invalid Figma URL" }), 
+        { status: 400, headers }
+      );
+    }
+    
     const fileKey = match[1];
 
+    // Fetch Figma file data
     const res = await fetch(`https://api.figma.com/v1/files/${fileKey}`, {
       headers: {
         "X-Figma-Token": FIGMA_TOKEN,
         "User-Agent": "Appwrite-Sites-Bot/1.0",
       },
     });
-    if (!res.ok) throw new Error(`Figma API error ${res.status}`);
+
+    if (!res.ok) {
+      throw new Error(`Figma API error ${res.status}: ${res.statusText}`);
+    }
+
     const data = await res.json();
 
+    // Process the Figma data to extract frames and their metadata
     const allFrames: any[] = [];
     flattenFrames(data.document, allFrames);
 
-    const sections: any[] = [];
-    const seenTypes = new Set<string>();
-
-    allFrames.forEach((f) => {
-      const type = getComponentType(f.name);
-
-      // Skip duplicates for card/blog/testimonial (only one instance)
-      if (["Card", "Blog", "Testimonial"].includes(type)) {
-        if (seenTypes.has(type)) return;
-        seenTypes.add(type);
-      }
-
-      // Skip long container frames (frames that only wrap others and no text)
-      const texts = collectTextNodes(f);
-      const hasChildFrames =
-        f.children && f.children.some((c: any) => c.type === "FRAME");
-      if (!texts.length && hasChildFrames) return;
-
-      const uniqueName = getUniqueName(type);
-      sections.push({
-        id: f.id,
-        name: f.name,
-        component: uniqueName,
-        code: generateAstroCode(type, uniqueName, texts, f),
-      });
+    // Process frames to create structured data for generation
+    const processedFrames = allFrames.map((frame) => {
+      const texts = collectTextNodes(frame);
+      const componentType = getComponentType(frame.name);
+      const hasChildFrames = frame.children && frame.children.some((c: any) => c.type === "FRAME");
+      
+      return {
+        id: frame.id,
+        name: frame.name,
+        type: componentType,
+        texts,
+        hasChildFrames,
+        shouldSkip: !texts.length && hasChildFrames, // Skip container frames
+        rawNode: frame // Include raw node data for generate.ts if needed
+      };
     });
 
     return new Response(
       JSON.stringify({
+        success: true,
         figmaURL,
         fileKey,
         totalFrames: allFrames.length,
-        totalSections: sections.length,
-        sections,
-        embedUrl: `https://www.figma.com/embed?embed_host=astra&url=${encodeURIComponent(
-          figmaURL
-        )}`,
+        processedFrames,
+        embedUrl: `https://www.figma.com/embed?embed_host=astra&url=${encodeURIComponent(figmaURL)}`,
+        timestamp: new Date().toISOString()
       }),
       { status: 200, headers }
     );
+
   } catch (err: any) {
-    return new Response(JSON.stringify({ message: err.message }), {
-      status: 500,
-      headers,
-    });
+    console.error("Convert API error:", err);
+    return new Response(
+      JSON.stringify({ 
+        success: false,
+        message: err.message,
+        timestamp: new Date().toISOString()
+      }), 
+      { status: 500, headers }
+    );
   }
 };
