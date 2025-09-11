@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
 import { resetCredits } from "@/lib/appwrite";
 
-const SITE_ORIGIN = "https://figstro.appwrite.network";
+const SITE_ORIGIN = "*";
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": SITE_ORIGIN,

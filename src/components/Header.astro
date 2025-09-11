@@ -7,9 +7,8 @@ import {
   SignInButton,
   SignOutButton,
 } from "@clerk/astro/components";
-import Button from "./starwind/button";
 import { getUserInfo } from "@/lib/appwrite";
-import ResetButton from "./resetButton.astro";
+import ResetButton from "@/components/ResetButton.vue";
 let userCredits;
 if (user) {
   const credits = await getUserInfo(user.id);
@@ -39,7 +38,7 @@ if (user) {
           userCredits > 0 ? (
             <h3 class="mr-3 font-bold">Credits: {userCredits}</h3>
           ) : (
-           <ResetButton userID={user?.id}/>
+           <ResetButton userID={user?.id} client:load />
           )
         }
         <SignOutButton class="bg-red-500 p-2 text-white rounded-md" />

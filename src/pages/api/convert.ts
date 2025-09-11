@@ -1,9 +1,8 @@
 import type { APIRoute } from "astro";
 
-const FIGMA_TOKEN = import.meta.env.FIGMA_ACCESS_TOKEN ||
-  process.env.FIGMA_ACCESS_TOKEN;
+const FIGMA_TOKEN = import.meta.env.FIGMA_ACCESS_TOKEN ||  process.env.FIGMA_ACCESS_TOKEN;
 
-const SITE_ORIGIN = "https://figstro.appwrite.network";
+const SITE_ORIGIN = "*";
 
 // Add OPTIONS handler for CORS preflight
 export const OPTIONS: APIRoute = async () => {

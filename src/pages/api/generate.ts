@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
 
-const SITE_ORIGIN = "https://figstro.appwrite.network";
+const SITE_ORIGIN = "*";
 
 // CORS preflight
 export const OPTIONS: APIRoute = async () => {

@@ -1,7 +1,7 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import Figstro from "@/components/Figstro.vue";
-import ResetButton from "@/components/resetButton.astro";
+import ResetButton from "@/components/ResetButton.vue";
 import { getUserInfo } from "@/lib/appwrite";
 
 const user = await Astro.locals.currentUser();
@@ -74,7 +74,7 @@ if (user) {
           </div>
 
           <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <ResetButton userID={user?.id} />
+            <ResetButton userID={user?.id} client:load/>
           </div>
 
           <!-- Benefits section -->
