@@ -1,0 +1,11 @@
+---
+import Button from "./starwind/button";
+const { userID } = Astro.props;
+---
+
+<form action="/api/reset" method="POST">
+    <input name="userID" value={userID} hidden />
+    <Button type="submit" class="bg-orange-700 text-white rounded-md">
+        Reset Credits
+    </Button>
+</form>

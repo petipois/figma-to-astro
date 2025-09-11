@@ -9,11 +9,12 @@ import {
 } from "@clerk/astro/components";
 import Button from "./starwind/button";
 import { getUserInfo } from "@/lib/appwrite";
-let userCredits = 10;
-/*if (user) {
+import ResetButton from "./resetButton.astro";
+let userCredits;
+if (user) {
   const credits = await getUserInfo(user.id);
   userCredits = credits?.credits;
-}*/
+}
 ---
 
 <nav class="bg-white border-b-2 border-black">
@@ -30,15 +31,17 @@ let userCredits = 10;
       >
     </a>
 
-    <!-- Right side buttons -->
     <div
       class="flex md:order-2 items-center space-x-3 md:space-x-0 rtl:space-x-reverse"
     >
       <SignedIn>
-        <h3 class="mr-3 font-bold">Credits: {userCredits}</h3>
-        <Button class="bg-orange-700 text-white rounded-md"
-          >Reset Credits</Button
-        >
+        {
+          userCredits > 0 ? (
+            <h3 class="mr-3 font-bold">Credits: {userCredits}</h3>
+          ) : (
+           <ResetButton userID={user?.id}/>
+          )
+        }
         <SignOutButton class="bg-red-500 p-2 text-white rounded-md" />
       </SignedIn>
 

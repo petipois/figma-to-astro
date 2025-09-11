@@ -15,6 +15,10 @@ export const navLinks = [
         label: "Login",
         link: "/login",
     },
+      {
+        label: "Demo",
+        link: "/demo",
+    },
 
 ];
 export const loggedInLinks = [
@@ -31,8 +35,8 @@ export const loggedInLinks = [
         link: "/#features",
     },
     {
-        label: "Convert",
-        link: "/converter",
+        label: "Demo",
+        link: "/demo",
     },
       {
         label: "Profile",
@@ -58,3 +62,4 @@ export const howItWorksSteps = [
     content: "Get perfectly structured Astro components with clean, maintainable code ready for your project in seconds."
   }
 ];
+export const defaultCredits = 5;

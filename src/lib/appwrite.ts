@@ -1,5 +1,6 @@
 import { Client, Account, ID, TablesDB, Query } from "appwrite";
-
+import { defaultCredits } from "./consts";
+// Setup Appwrite client
 const client = new Client()
   .setEndpoint(import.meta.env.PUBLIC_APPWRITE_ENDPOINT!) // e.g., https://cloud.appwrite.io/v1
   .setProject(import.meta.env.PUBLIC_APPWRITE_PROJECT_ID!);
@@ -7,13 +8,21 @@ const client = new Client()
 export const account = new Account(client);
 export const table = new TablesDB(client);
 
-const DATABASE_ID = import.meta.env.APPWRITE_DB; // Database ID string
-const CREDITS_TABLE = import.meta.env.APPWRITE_TABLE; // Table ID string
+const DATABASE_ID = import.meta.env.PUBLIC_APPWRITE_DB!;
+const CREDITS_TABLE = import.meta.env.PUBLIC_APPWRITE_TABLE!;
+
+// Ensure we get the string userID
+function resolveUserID(userID: string) {
+  if (!userID) throw new Error("No user ID provided");
+  return userID;
+}
+
 // Get a user's row by userID
 export async function getUserInfo(userID: string) {
+  const id = resolveUserID(userID);
   try {
     const response = await table.listRows(DATABASE_ID, CREDITS_TABLE, [
-      Query.equal("user_id", userID)
+      Query.equal("user_id", id!)
     ]);
     return response.total > 0 ? response.rows[0] : null;
   } catch (error) {
@@ -22,42 +31,24 @@ export async function getUserInfo(userID: string) {
   }
 }
 
-// Update credits for a user
-export async function updateCredits(userID: string) {
-  try {
-    const userRow = await getUserInfo(userID);
-    let currentCredits = userRow?.credits;
-    if (!userRow) throw new Error("User not found");
-
-    const response = await table.updateRow(DATABASE_ID, CREDITS_TABLE, userRow.$id, {
-      credits:currentCredits-1,
-      updatedAt: new Date().toISOString()
-    });
-
-    return response;
-  } catch (error) {
-    console.error("Failed to update credits:", error);
-    throw error;
-  }
+// Check if a user exists
+export async function isUserInDB(userID: string) {
+  const user = await getUserInfo(userID);
+  return !!user;
 }
 
+// Create a new user row if it doesn't exist
 export async function createCreditAccount(userID: string) {
+  const id = resolveUserID(userID);
+  const existing = await getUserInfo(id!);
+  if (existing) return existing;
+
   try {
-    // 1️⃣ Check if the user already has a row
-    const existing = await table.listRows(DATABASE_ID, CREDITS_TABLE, [
-      Query.equal("user_id", userID)
-    ]);
-
-    if (existing.total > 0) {
-      // Return the existing row instead of creating a new one
-      return existing.rows[0];
-    }
-
-    // 2️⃣ If not found, create a new row
     const response = await table.createRow(DATABASE_ID, CREDITS_TABLE, ID.unique(), {
-      user_id: userID,
+      user_id: id,
+      credits: defaultCredits, // initial credits
+      figmaURL: null,
     });
-
     return response;
   } catch (error) {
     console.error("Failed to create credit account:", error);
@@ -65,3 +56,61 @@ export async function createCreditAccount(userID: string) {
   }
 }
 
+// Add or update a Figma file for a user
+export async function addFigmaFile(userID: string, url: string) {
+  const id = resolveUserID(userID);
+  let userRow = await getUserInfo(id!);
+
+  if (!userRow) {
+    userRow = await createCreditAccount(id!);
+  }
+
+  try {
+    const response = await table.updateRow(DATABASE_ID, CREDITS_TABLE, userRow.$id, {
+      figmaURL: url,
+    });
+    return response;
+  } catch (error) {
+    console.error("Failed to add Figma file:", error);
+    throw error;
+  }
+}
+
+// Update credits for a user
+export async function updateCredits(userID: string) {
+  const id = resolveUserID(userID);
+  const userRow = await getUserInfo(id!);
+  if (!userRow) throw new Error("User not found");
+
+  const newCredits = (userRow.credits-1 || 0) ;
+
+  try {
+    const response = await table.updateRow(DATABASE_ID, CREDITS_TABLE, userRow.$id, {
+      credits: newCredits,
+    });
+    return response;
+  } catch (error) {
+    console.error("Failed to update credits:", error);
+    throw error;
+  }
+}
+
+
+// Reset credits for a user
+export async function resetCredits(userID: string) {
+  const id = resolveUserID(userID);
+  const userRow = await getUserInfo(id!);
+  if (!userRow) throw new Error("User not found");
+
+  const newCredits = defaultCredits;
+
+  try {
+    const response = await table.updateRow(DATABASE_ID, CREDITS_TABLE, userRow.$id, {
+      credits: newCredits,
+    });
+    return response;
+  } catch (error) {
+    console.error("Failed to reset credits:", error);
+    throw error;
+  }
+}
