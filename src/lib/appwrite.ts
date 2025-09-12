@@ -25,10 +25,10 @@ export async function getUserInfo(userID: string): Promise<any> {
       Query.equal("user_id", id!)
     ]); if (response.total > 0) {
       return response.rows[0];
-      
+
     }
     // No account found → create one
-    return await createCreditAccount(userID);
+   // return await createCreditAccount(userID);
   } catch (error) {
     console.error("Failed to fetch user info:", error);
     throw error;

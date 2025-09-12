@@ -2,14 +2,18 @@
 import Layout from "@/layouts/Layout.astro";
 import Figstro from "@/components/Figstro.vue";
 import ResetButton from "@/components/ResetButton.vue";
-import { getUserInfo } from "@/lib/appwrite";
+import { createCreditAccount, getUserInfo } from "@/lib/appwrite";
 
 const user = await Astro.locals.currentUser();
 let userCredits;
 
 if (user) {
   const credits = await getUserInfo(user.id);
-  userCredits = credits?.credits ?? 0;
+  userCredits = credits?.credits;
+  if(!userCredits)
+{
+  await createCreditAccount(user.id);
+}
 }
 ---
 
