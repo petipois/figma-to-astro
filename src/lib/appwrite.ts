@@ -50,8 +50,7 @@ export async function createCreditAccount(userID: string) {
   try {
     const response = await table.createRow(DATABASE_ID, CREDITS_TABLE, ID.unique(), {
       user_id: id,
-      credits: defaultCredits, // initial credits
-      figmaURL: null,
+      credits: defaultCredits,
     });
     return response;
   } catch (error) {
