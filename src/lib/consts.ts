@@ -12,8 +12,8 @@ export const navLinks = [
         link: "/#features",
     },
     {
-        label: "Login",
-        link: "/login",
+        label: "Register",
+        link: "/register",
     },
       {
         label: "Demo",
