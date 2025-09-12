@@ -18,13 +18,17 @@ function resolveUserID(userID: string) {
 }
 
 // Get a user's row by userID
-export async function getUserInfo(userID: string) {
+export async function getUserInfo(userID: string): Promise<any> {
   const id = resolveUserID(userID);
   try {
     const response = await table.listRows(DATABASE_ID, CREDITS_TABLE, [
       Query.equal("user_id", id!)
-    ]);
-    return response.total > 0 ? response.rows[0] : null;
+    ]); if (response.total > 0) {
+      return response.rows[0];
+      
+    }
+    // No account found → create one
+    return await createCreditAccount(userID);
   } catch (error) {
     console.error("Failed to fetch user info:", error);
     throw error;
@@ -82,7 +86,7 @@ export async function updateCredits(userID: string) {
   const userRow = await getUserInfo(id!);
   if (!userRow) throw new Error("User not found");
 
-  const newCredits = (userRow.credits-1 || 0) ;
+  const newCredits = (userRow.credits - 1 || 0);
 
   try {
     const response = await table.updateRow(DATABASE_ID, CREDITS_TABLE, userRow.$id, {
