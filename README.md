@@ -1,5 +1,6 @@
 # Figma to Astro
 
+<<<<<<< HEAD
 This project is a web application that converts Figma designs to Astro components.
 
 ## 🚀 Project Structure
@@ -69,3 +70,9 @@ Contributions are welcome! Please read our [contributing guidelines](CONTRIBUTIN
 ## 👀 Want to learn more?
 
 Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+=======
+## convert
+Convert breaks down the figma file and makes it readable
+## generate
+Generates Astro Componennts and displays it to the user
+>>>>>>> 44d3a51b043e680077549f3c010694224c1a0784
