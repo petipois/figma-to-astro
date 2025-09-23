@@ -1,6 +1,5 @@
 # Figma to Astro
 
-<<<<<<< HEAD
 This project is a web application that converts Figma designs to Astro components.
 
 ## 🚀 Project Structure
